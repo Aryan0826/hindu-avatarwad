@@ -1,22 +1,23 @@
-# Hindu Avatarwad — The Avatar Gallery
+# Light Beyond Lamps — The Avatar Gallery
 
-An interactive exhibition display for **Light Beyond Lamps**. It introduces Avatarvad through Bhagavad Gita 4.7–8 and a looping gallery of ten principal avatars.
+A buildless Avatarvad exhibition in indigo and gold. The introduction presents Bhagavad Gita 4.7–8 with Devanagari, Roman transliteration and a concise English meaning. Its Next button opens a single-screen gallery.
 
-The display includes Sanskrit and Roman transliteration, concise purpose and values panels, scriptural reading references, complete paintings, animated avatar-specific cursors, touch controls, fullscreen and reduced-motion support. Kalki is represented without a portrait.
+The gallery is a continuous horizontal procession of ten large portraits. Each shows the avatar’s name, qualities and a short description of the form. Complete paintings use `object-fit: contain`. There is no vertical page scroll or separate hero section. The procession wraps seamlessly from Kalki to Matsya; Kalki has a typographic future placeholder, never a portrait.
 
-## GitHub Pages
+Select a portrait to pause movement and open its exhibit. Identity appears with the painting. The reading area begins with *Intent behind this avatar* and a large purpose heading, followed by a concise account, a gold takeaway and plain shaastra references. References name ancient scriptures and precise skandha, chapter and verse locations; there are no outbound source links, modern publication recommendations or reading tabs. Takeaways are exhibition interpretations, not quotations attributed to an avatar.
 
-This is a static website with no build dependencies. Publish the `main` branch from `/(root)` in **Settings → Pages**. The `.nojekyll` file keeps the site in plain static mode. All site assets use relative paths so the gallery works beneath the repository URL.
+## Interaction and access
 
-To run locally, serve this directory using any static web server (for example `python -m http.server 8000`) and open the server URL.
+- Pause/play and previous/next controls remain visible. Hovering a portrait or navigating it by keyboard pauses motion; leaving it resumes motion. Touch dragging, touchpad wheel movement and arrow keys support manual exploration.
+- A single accessible set of ten cards is backed by visual duplicates for the seamless loop. Duplicate cards remain tappable but are excluded from keyboard order and accessibility output.
+- Reduced-motion preferences start the gallery still. Visitors may explicitly choose Play. Display settings set speed, inactivity time and still mode.
+- An open exhibit pauses the procession. Three minutes of inactivity returns to the gallery by default, with a ten-second warning. Previous/next avatar controls and a clear return button remain available.
+- The two-page introduction/gallery navigation, fullscreen control and avatar-specific vector cursors are retained.
 
-## Editing
+## Files and hosting
 
-- `index.html` — introduction and gallery shell
-- `avatars.js` — avatar purpose, values and granth references
-- `app.js` — navigation, slideshow and display settings
-- `cursor.js` and `cursors.css` — animated pointer system
-- `style.css`, `responsive.css`, `stories.css`, `exhibition.css` — layout and presentation
-- `assets/` — local artwork
+Static files are at the repository root; no dependencies or build step are required. `loop-gallery.css` contains the procession and revised exhibit layout. `app.js` controls movement and dialogs; `avatars.js` holds content and shaastra references. Source research locators are in `docs/exhibition-sources.md`.
 
-Paintings are artistic interpretations. Summaries and English renderings are original exhibition text; granth references are shown in each panel. Google Fonts and external reading links require an internet connection.
+The existing GPT Site retains its configured audience. For GitHub Pages, copy the contents of `dist/` to the repository root and include `.nojekyll`. All local asset paths are relative, including under the project’s GitHub Pages subpath.
+
+Artwork consists of existing generated artistic interpretations; this revision changes layout and reference presentation, not the paintings. Google Fonts supplies Cormorant Garamond, DM Sans and Noto Serif Devanagari with system fallbacks. There are no API keys or visitor trackers.

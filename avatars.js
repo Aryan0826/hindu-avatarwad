@@ -1,5 +1,4 @@
-/* Concise exhibition panels. Granth references are always visible.
-   Takeaways are original exhibition interpretations, not direct scriptural quotations. */
+/* Concise exhibition summaries. Shaastra locators refer to ancient texts; takeaways are original interpretations. */
 window.AVATAR_STORIES = [
   {
     "id": "matsya",
@@ -7,7 +6,7 @@ window.AVATAR_STORIES = [
     "sa": "मत्स्य",
     "theme": "PROTECTION & CONTINUITY",
     "short": "Protection",
-    "form": "The fish",
+    "form": "Bhagwan in the form of a fish",
     "summary": "A small act of care becomes a promise of protection.",
     "image": "assets/matsya-v4.png",
     "alt": "A radiant golden Matsya with flowing fins, guiding Manu’s boat through sunlit floodwaters without a horn or ornaments",
@@ -20,11 +19,10 @@ window.AVATAR_STORIES = [
       "Care",
       "Faith"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 8 · Chapter 24",
-        "url": "https://vedabase.io/en/library/sb/8/24/"
+        "reference": "Skandha 8 · Chapter 24"
       }
     ]
   },
@@ -34,7 +32,7 @@ window.AVATAR_STORIES = [
     "sa": "कूर्म",
     "theme": "STEADINESS & SERVICE",
     "short": "Steadiness",
-    "form": "The tortoise",
+    "form": "Bhagwan in the form of a tortoise",
     "summary": "The quiet strength beneath a great undertaking.",
     "image": "assets/kurma-v2.png",
     "alt": "Kurma supporting Mandara while devas pull Vasuki’s tail on the left and asuras pull his head side on the right",
@@ -46,11 +44,10 @@ window.AVATAR_STORIES = [
       "Service",
       "Perseverance"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 8 · Chapters 6–9",
-        "url": "https://vedabase.io/en/library/sb/8/7/"
+        "reference": "Skandha 8 · Chapters 6–9; especially 8.7.6–10"
       }
     ]
   },
@@ -60,7 +57,7 @@ window.AVATAR_STORIES = [
     "sa": "वराह",
     "theme": "RESTORATION & CARE",
     "short": "Restoration",
-    "form": "The boar",
+    "form": "Bhagwan in the form of a boar",
     "summary": "Lifting the Earth. Restoring a world in need.",
     "image": "assets/varaha-v4.png",
     "alt": "Varaha with the Earth resting on top of his snout between a near and far tusk",
@@ -72,11 +69,10 @@ window.AVATAR_STORIES = [
       "Protection",
       "Restoration"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 3 · Chapters 13, 18–19",
-        "url": "https://vedabase.io/en/library/sb/3/13/"
+        "reference": "Skandha 3 · Chapters 13, 18–19"
       }
     ]
   },
@@ -86,7 +82,7 @@ window.AVATAR_STORIES = [
     "sa": "नरसिंह",
     "theme": "FAITH & PROTECTION",
     "short": "Faith",
-    "form": "The man-lion",
+    "form": "The man-lion form of Bhagwan",
     "summary": "A devotee’s courage. A presence beyond every limit.",
     "image": "assets/narasimha.png",
     "alt": "Narasimha protecting the young devotee Prahlad in a palace",
@@ -98,11 +94,10 @@ window.AVATAR_STORIES = [
       "Fearlessness",
       "Compassion"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 7 · Chapters 5–10",
-        "url": "https://vedabase.io/en/library/sb/7/8/"
+        "reference": "Skandha 7 · Chapters 5–10; manifestation in Chapter 8"
       }
     ]
   },
@@ -112,7 +107,7 @@ window.AVATAR_STORIES = [
     "sa": "वामन",
     "theme": "HUMILITY & SURRENDER",
     "short": "Humility",
-    "form": "The young ascetic",
+    "form": "The young brahmachari",
     "summary": "Three steps of land. A promise larger than a kingdom.",
     "image": "assets/vamana.png",
     "alt": "Vamana with an umbrella and water pot in King Bali’s court",
@@ -124,11 +119,10 @@ window.AVATAR_STORIES = [
       "Truthfulness",
       "Surrender"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 8 · Chapters 18–23",
-        "url": "https://vedabase.io/en/library/sb/8/22/"
+        "reference": "Skandha 8 · Chapters 18–23; Bali’s surrender in Chapter 22"
       }
     ]
   },
@@ -150,11 +144,10 @@ window.AVATAR_STORIES = [
       "Discipline",
       "Forgiveness"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 9 · Chapters 15–16; 9.15.40 on forgiveness",
-        "url": "https://vedabase.io/en/library/sb/9/15/"
+        "reference": "Skandha 9 · Chapters 15–16; forgiveness in 9.15.40"
       }
     ]
   },
@@ -176,16 +169,10 @@ window.AVATAR_STORIES = [
       "Duty",
       "Devotion"
     ],
-    "granth": [
+    "shaastra": [
       {
-        "name": "The Ramayan · BAPS edition",
-        "reference": "Sadhu Amrutvijaydas · Swaminarayan Aksharpith",
-        "url": "https://www.baps.org/Publications/Books/The-Ramayan-1303.aspx"
-      },
-      {
-        "name": "Valmiki Ramayana",
-        "reference": "Ayodhya, Aranya & Yuddha Kandas",
-        "url": "https://www.valmikiramayan.net/"
+        "name": "Shrimad Bhagavata Purana",
+        "reference": "Skandha 9 · Chapter 10; exile: 9.10.4, 8 · Ravana’s defeat: 9.10.23"
       }
     ]
   },
@@ -195,7 +182,7 @@ window.AVATAR_STORIES = [
     "sa": "श्री कृष्ण",
     "theme": "WISDOM & DEVOTION",
     "short": "Devotion",
-    "form": "The divine guide",
+    "form": "The guide of Arjuna",
     "summary": "A shelter for the vulnerable. Wisdom for every choice.",
     "image": "assets/krishna.png",
     "alt": "Shri Krishna with a flute and peacock-feather crown beside the Yamuna",
@@ -207,16 +194,14 @@ window.AVATAR_STORIES = [
       "Wisdom",
       "Selfless action"
     ],
-    "granth": [
-      {
-        "name": "The Shrimad Bhagavad Gita · BAPS edition",
-        "reference": "Dr. Aksharananddas Swami et al. · 2.47; 4.7–8",
-        "url": "https://research.baps.org/publications/books/the-shrimad-bhagavad-gita-original-devanagari-text-with-transliteration-and-english-translation/"
-      },
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 10 · Shri Krishna’s life",
-        "url": "https://vedabase.io/en/library/sb/10/"
+        "reference": "Skandha 10 · Chapters 25 (Govardhan), 44 (Kamsa)"
+      },
+      {
+        "name": "Bhagavad Gita",
+        "reference": "Chapter 2 · Verse 47; Chapter 4 · Verses 7–8"
       }
     ]
   },
@@ -238,16 +223,14 @@ window.AVATAR_STORIES = [
       "Compassion",
       "Discernment"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "1.3.24 · 11.4.22",
-        "url": "https://vedabase.io/en/library/sb/11/4/22/"
+        "reference": "Skandha 1 · Chapter 3, verse 24; Skandha 11 · Chapter 4, verse 22"
       },
       {
         "name": "Bhagavad Gita",
-        "reference": "16.1–3 · Ahimsa · BAPS edition",
-        "url": "https://research.baps.org/publications/books/the-shrimad-bhagavad-gita-original-devanagari-text-with-transliteration-and-english-translation/"
+        "reference": "Chapter 16 · Verses 1–3 (the related value of ahimsa)"
       }
     ]
   },
@@ -257,7 +240,7 @@ window.AVATAR_STORIES = [
     "sa": "कल्कि",
     "theme": "HOPE & RENEWAL",
     "short": "Renewal",
-    "form": "The avatar yet to come",
+    "form": "The avatar yet to manifest",
     "summary": "A vision of renewal when dharma has been forgotten.",
     "image": null,
     "alt": "",
@@ -269,11 +252,10 @@ window.AVATAR_STORIES = [
       "Justice",
       "Renewal"
     ],
-    "granth": [
+    "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 12 · Chapter 2, verses 18–24",
-        "url": "https://vedabase.io/en/library/sb/12/2/"
+        "reference": "Skandha 12 · Chapter 2, verses 18–24"
       }
     ]
   }
