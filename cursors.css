@@ -1,0 +1,16 @@
+/* Vector light, not bitmap cursors. The exact ruby point never lags behind the pointer. */
+.gallery-cursor{position:fixed;inset:0 auto auto 0;margin:0;padding:0;border:0;width:0;height:0;overflow:visible;background:transparent;pointer-events:none!important;opacity:0;transition:opacity .16s;--cursor-ink:#e8c994;--cursor-glow:#d5b47a33}
+.gallery-cursor:popover-open{display:block}.gallery-cursor.visible{opacity:1}.gallery-cursor::backdrop{display:none;pointer-events:none}.gallery-cursor *{pointer-events:none!important}
+.cursor-point{position:absolute;top:-2px;left:-2px;width:4px;height:4px;border-radius:50%;background:#ff6958;box-shadow:0 0 0 1px #fff9,0 0 0 2.5px #08131dee,0 0 8px #ff695880;will-change:transform;z-index:2}
+.cursor-aura{position:absolute;top:-25px;left:-25px;width:50px;height:50px;will-change:transform;transition:color .4s;color:var(--cursor-ink)}
+.cursor-aura svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 1px 1px #02080bcc) drop-shadow(0 0 5px var(--cursor-glow));transform:scale(.85);transition:transform .25s ease,opacity .25s;opacity:1}
+.cursor-orbit{transform-origin:32px 32px;animation:cursor-orbit 14s linear infinite}.cursor-orbit circle{stroke:currentColor;stroke-width:1;opacity:.46}.cursor-orbit path{stroke:currentColor;stroke-width:1.7;stroke-linecap:round;opacity:1}
+.cursor-emblem{transform:translate(26px,-26px) scale(.86);transform-origin:32px 32px}.cursor-sigil,.cursor-sigil-outline{stroke-linecap:round;stroke-linejoin:round;fill:none}.cursor-sigil-outline{stroke:#06111b;stroke-width:5.2;opacity:.95}.cursor-sigil{stroke:currentColor;stroke-width:2;opacity:1;transition:opacity .25s}
+.gallery-cursor.interactive .cursor-aura svg{transform:scale(1.13);opacity:1}.gallery-cursor.interactive .cursor-sigil{opacity:1}
+.gallery-cursor.pressed .cursor-aura svg{transform:scale(.7)}
+@keyframes cursor-orbit{to{transform:rotate(360deg)}}
+@media(hover:hover) and (pointer:fine){html.cursor-ready,html.cursor-ready *,html.cursor-ready dialog::backdrop{cursor:none!important}}
+@media(prefers-reduced-motion:reduce){.cursor-orbit{animation:none}.cursor-aura svg,.gallery-cursor{transition:none}}
+.gentle .cursor-orbit{animation:none}
+
+.gallery-cursor:not(.visible) .cursor-orbit{animation-play-state:paused}
