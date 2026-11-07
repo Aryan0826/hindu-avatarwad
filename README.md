@@ -18,6 +18,6 @@ Select a portrait to pause movement and open its exhibit. Identity appears with 
 
 Static files are at the repository root; no dependencies or build step are required. `loop-gallery.css` contains the procession and revised exhibit layout. `app.js` controls movement and dialogs; `avatars.js` holds content and shaastra references. Source research locators are in `docs/exhibition-sources.md`.
 
-The existing GPT Site retains its configured audience. For GitHub Pages, copy the contents of `dist/` to the repository root and include `.nojekyll`. All local asset paths are relative, including under the project’s GitHub Pages subpath.
+The existing GPT Site retains its configured audience. GitHub Pages currently publishes `main` from `/(root)`. This revision is on `exhibition-loop-gallery`; merge it into `main` when ready to update GitHub Pages. `.nojekyll` keeps publication in static mode. All local asset paths are relative, including under the project’s GitHub Pages subpath.
 
 Artwork consists of existing generated artistic interpretations; this revision changes layout and reference presentation, not the paintings. Google Fonts supplies Cormorant Garamond, DM Sans and Noto Serif Devanagari with system fallbacks. There are no API keys or visitor trackers.
