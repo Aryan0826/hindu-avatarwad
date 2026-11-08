@@ -11,19 +11,19 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let settings = {duration:12000,idle:180000,gentle:reducedMotion.matches};
 try {
  const saved = JSON.parse(localStorage.getItem('avatar-gallery-settings') || 'null');
- if(saved && [8000,12000,18000,24000].includes(saved.duration) && [60000,90000,120000,180000].includes(saved.idle)) settings = {...settings,...saved};
+ if(saved && Number.isFinite(saved.duration) && saved.duration>=4000 && saved.duration<=48000 && [60000,90000,120000,180000].includes(saved.idle)) settings = {...settings,...saved};
 } catch {}
 document.documentElement.classList.toggle('gentle', settings.gentle);
 const cards = avatars.map((a,i) => {
  const button = document.createElement('button');
  button.className='avatar-card';button.dataset.avatar=a.id;button.dataset.index=i;
  button.setAttribute('aria-label',`Explore ${a.name}, ${a.form}. ${a.theme.toLowerCase()}`);
- button.innerHTML=`<span class="card-surface"><span class="card-painting">${a.image?`<img src="${esc(a.image)}" alt="" loading="${i<4?'eager':'lazy'}" decoding="async" draggable="false">`:'<span class="future-card"><span lang="sa">कल्कि</span><strong>Yet to manifest.</strong><small>A future promise of renewed dharma.</small></span>'}<span class="card-num">${String(i+1).padStart(2,'0')}</span></span><span class="card-copy"><span class="card-topline"><span class="card-theme">${esc(a.theme)}</span><svg class="card-emblem" viewBox="0 0 64 64" aria-hidden="true"><path d="${esc(window.galleryCursor?.pathFor(a.id)||'M12 32H52')}"/></svg></span><span class="card-title-row"><span class="card-name">${esc(a.name)}</span><span class="card-sanskrit" lang="sa">${esc(a.sa)}</span></span><span class="card-form">${esc(a.form)}</span><span class="card-arrow" aria-hidden="true">↗</span></span></span>`;
+ button.innerHTML=`<span class="card-surface"><span class="card-painting">${a.image?`<img src="${esc(a.image)}" alt="" loading="${i<4?'eager':'lazy'}" decoding="async" draggable="false">`:'<span class="future-card"><span lang="sa">कल्कि</span><strong>Yet to incarnate.</strong><small>A future promise of renewed dharma.</small></span>'}<span class="card-num">${String(i+1).padStart(2,'0')}</span></span><span class="card-copy"><span class="card-topline"><span class="card-theme">${esc(a.theme)}</span><svg class="card-emblem" viewBox="0 0 64 64" aria-hidden="true"><path d="${esc(window.galleryCursor?.pathFor(a.id)||'M12 32H52')}"/></svg></span><span class="card-title-row"><span class="card-name">${esc(a.name)}</span><span class="card-sanskrit" lang="sa">${esc(a.sa)}</span></span><span class="card-form">${esc(a.form)}</span><span class="card-arrow" aria-hidden="true">↗</span></span></span>`;
  group.append(button);return button;
 });
 const introStop=document.createElement('button');
-introStop.className='intro-stop';introStop.dataset.intro='true';introStop.setAttribute('aria-label','Why Bhagwan manifests: explore Bhagavad Gita 4.7–8');
-introStop.innerHTML=`<span class="intro-portal"><svg class="portal-lotus" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="48"/><circle cx="60" cy="60" r="40"/><path d="M60 82C28 68 28 48 34 37C49 39 58 58 60 82ZM60 82C92 68 92 48 86 37C71 39 62 58 60 82ZM60 80C39 53 46 32 60 22C74 32 81 53 60 80ZM32 87H88"/></svg><span class="portal-reference">BHAGAVAD GITA 4.7–8</span><span class="portal-title">Why Bhagwan<br><em>manifests.</em></span><span class="portal-shlok" lang="sa">यदा यदा हि धर्मस्य…</span><span class="portal-action">Explore the shlok <span aria-hidden="true">→</span></span></span>`;
+introStop.className='intro-stop';introStop.dataset.intro='true';introStop.setAttribute('aria-label','Why Bhagwan incarnates: explore Bhagavad Gita 4.7–8');
+introStop.innerHTML=`<span class="intro-portal"><svg class="portal-lotus" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="48"/><circle cx="60" cy="60" r="40"/><path d="M60 82C28 68 28 48 34 37C49 39 58 58 60 82ZM60 82C92 68 92 48 86 37C71 39 62 58 60 82ZM60 80C39 53 46 32 60 22C74 32 81 53 60 80ZM32 87H88"/></svg><span class="portal-reference">BHAGAVAD GITA 4.7–8</span><span class="portal-title">Why Bhagwan<br><em>incarnates.</em></span><span class="portal-shlok" lang="sa">यदा यदा हि धर्मस्य…</span><span class="portal-action">Explore the shlok <span aria-hidden="true">→</span></span></span>`;
 group.append(introStop);
 const stops=[...cards,introStop];
 // One accessible set, with visual duplicates for a seamless wrap. Copies remain tappable.
@@ -159,12 +159,13 @@ dialogs.forEach(d=>{
 });
 function renderDetail(){
  const a=avatars[active];$('detail-count').textContent=`THE AVATAR GALLERY / ${String(active+1).padStart(2,'0')} OF 10`;
+ $('reader-layout').dataset.avatar=a.id;
  $('reader-art').hidden=false;$('reader-layout').classList.toggle('future-exhibit',!a.image);
  $('detail-img').hidden=!a.image;$('detail-future').hidden=!!a.image;
  if(a.image){$('detail-img').src=a.image;$('detail-img').alt=a.alt;}else{$('detail-img').removeAttribute('src');$('detail-img').alt='';}
  $('detail-name').textContent=a.name;$('detail-theme').textContent=a.theme;$('detail-form').textContent=a.form;$('detail-sanskrit').textContent=a.sa;
  $('previous-name').textContent=avatars[(active+avatars.length-1)%avatars.length].name;$('next-name').textContent=avatars[(active+1)%avatars.length].name;
- $('reader-content').innerHTML=`<div class="exhibit-inner"><section class="exhibit-purpose" aria-labelledby="intent-title"><p class="intent-question">Intent behind this avatar</p><h3 id="intent-title">${esc(a.purpose)}</h3><p>${esc(a.mission)}</p></section><aside class="exhibit-takeaway"><span class="exhibit-label">${a.id==='krishna'?'TEACHING TO LIVE BY':'MEANING TO CARRY WITH YOU'}</span><p>${esc(a.takeaway)}</p><ul class="exhibit-values" aria-label="Values highlighted">${a.values.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></aside><section class="exhibit-shaastra" aria-label="Shaastra references for further reading"><span class="exhibit-label">FURTHER READING · SHAASTRA</span><div class="shaastra-list">${a.shaastra.map(g=>`<p><strong>${esc(g.name)}</strong><span>${esc(g.reference)}</span></p>`).join('')}</div></section></div>`;
+ $('exhibit-content').innerHTML=`<section class="exhibit-purpose" aria-labelledby="intent-title"><p class="intent-question">Intent behind this avatar</p><h3 id="intent-title">${esc(a.purpose)}</h3><p>${esc(a.mission)}</p></section><aside class="exhibit-takeaway"><span class="exhibit-label">${a.id==='krishna'?'TEACHING TO LIVE BY':'MEANING TO CARRY WITH YOU'}</span><p>${esc(a.takeaway)}</p><ul class="exhibit-values" aria-label="Values highlighted">${a.values.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></aside><section class="exhibit-shaastra" aria-label="Shaastra references to find out more"><span class="exhibit-label">FIND OUT MORE · SHAASTRA</span><div class="shaastra-list">${a.shaastra.map(g=>`<p><strong>${esc(g.name)}</strong><span>${esc(g.reference)}</span></p>`).join('')}</div></section>`;
  $('reader-content').scrollTo({top:0,left:0,behavior:'instant'});
 }
 function openDetail(index){setActive(index);renderDetail();if(!$('detail-dialog').open)modalOpen($('detail-dialog'));lastActivity=Date.now();}
@@ -173,10 +174,20 @@ function toast(message){$('toast').textContent=message;$('toast').hidden=false;s
 function fullscreenFallback(){$('fullscreen-status').hidden=false;$('fullscreen-status').textContent='Use your browser’s fullscreen option (usually F11).';}
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else fullscreenFallback();}catch{fullscreenFallback();}});
 document.addEventListener('fullscreenchange',()=>{const label=document.fullscreenElement?'Exit fullscreen':'Enter fullscreen';$('fullscreen').setAttribute('aria-label',label);$('fullscreen-label').textContent=label;window.galleryCursor?.raise();});
-$('display-settings').addEventListener('click',()=>{$('slide-duration').value=String(settings.duration);$('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;modalOpen($('settings-dialog'));});
+$('display-settings').addEventListener('click',()=>{$('slide-duration').value=String(Math.round(1200000/settings.duration/5)*5);syncSpeedPreview();$('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;modalOpen($('settings-dialog'));});
 $('close-settings').addEventListener('click',()=>$('settings-dialog').close());
+function syncSpeedPreview(){
+ const speed=Number($('slide-duration').value)/100;
+ const pace=speed<=.5?'Meditative':speed<1?'Unhurried':speed===1?'Exhibition pace':speed<=1.5?'Flowing':speed<=2?'Brisk':'Lively';
+ $('speed-value').textContent=`${speed}× · ${pace}`;
+ $('slide-duration').setAttribute('aria-valuetext',`${speed} times speed, ${pace}`);
+ $('slide-duration').style.setProperty('--range-progress',`${(speed-.25)/2.75*100}%`);
+}
+$('slide-duration').addEventListener('input',syncSpeedPreview);
+$('reset-speed').addEventListener('click',()=>{$('slide-duration').value='100';syncSpeedPreview();});
+syncSpeedPreview();
 $('save-settings').addEventListener('click',()=>{
- settings={duration:Number($('slide-duration').value),idle:Number($('idle-duration').value),gentle:$('reduce-motion').checked};
+ settings={duration:1200000/Number($('slide-duration').value),idle:Number($('idle-duration').value),gentle:$('reduce-motion').checked};
  motionOptIn=!settings.gentle;document.documentElement.classList.toggle('gentle',settings.gentle);try{localStorage.setItem('avatar-gallery-settings',JSON.stringify(settings));}catch{}
  $('settings-dialog').close();updateMotion();
 });
@@ -184,7 +195,7 @@ for(const event of ['pointerdown','pointermove','keydown','wheel','touchstart','
 $('keep-reading').addEventListener('click',()=>{lastActivity=Date.now();$('idle-notice').hidden=true;});
 document.addEventListener('keydown',e=>{
  if(dialogs.some(d=>d.open)||['SELECT','INPUT','TEXTAREA'].includes(e.target.tagName))return;
- if(openingStep===0){if(e.key==='ArrowRight'){e.preventDefault();showOpening(1);}return;}
+ if(openingStep===0){if(e.key==='ArrowRight'||e.key==='Escape'){e.preventDefault();showOpening(1);}return;}
  if(viewport.contains(e.target))return;
  if(e.key==='ArrowRight'){e.preventDefault();stepGallery(1);}if(e.key==='ArrowLeft'){e.preventDefault();stepGallery(-1);}
 });
@@ -202,6 +213,6 @@ function showOpening(step){
  lastActivity=Date.now();hovered=false;keyboardFocus=false;window.scrollTo({top:0,left:0,behavior:'instant'});
  (isOpening?$('opening-title'):$('gallery-page-title')).focus({preventScroll:true});if(!isOpening)measure();updateMotion();
 }
-$('opening-next').addEventListener('click',()=>showOpening(1));
+$('opening-close').addEventListener('click',()=>showOpening(1));
 new ResizeObserver(()=>{if(openingStep===1)measure();}).observe(viewport);
 showOpening(0);setActive(0);

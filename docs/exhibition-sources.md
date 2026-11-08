@@ -10,8 +10,8 @@ Verified 7 November 2026. The visitor-facing references name ancient scriptures,
 | Narasimha | Shrimad Bhagavata Purana, Skandha 7, Chapters 5–10; manifestation in Chapter 8 |
 | Vamana | Shrimad Bhagavata Purana, Skandha 8, Chapters 18–23; Bali’s surrender in Chapter 22 |
 | Parashurama | Shrimad Bhagavata Purana, Skandha 9, Chapters 15–16; forgiveness in 9.15.40 |
-| Shri Rama | Shrimad Bhagavata Purana, Skandha 9, Chapter 10; exile in verses 4 and 8, Ravana’s defeat in verse 23 |
-| Shri Krishna | Shrimad Bhagavata Purana, Skandha 10, Chapters 25 and 44; Bhagavad Gita 2.47 and 4.7–8 |
+| Shri Rama | Shrimad Bhagavata Purana, Skandha 9, Chapter 10; especially verses 4, 8, 16, 23 and 50 |
+| Shri Krishna | Shrimad Bhagavata Purana, Skandha 10, Chapters 25 and 44; Bhagavad Gita 1.21–24, 2.31, 2.47, 4.7–8, 18.65 and 18.73 |
 | Buddha | Shrimad Bhagavata Purana 1.3.24 and 11.4.22; Bhagavad Gita 16.1–3 for the explicitly related Hindu value of ahimsa |
 | Kalki | Shrimad Bhagavata Purana, Skandha 12, Chapter 2, verses 18–24 |
 
@@ -30,3 +30,13 @@ Verified 7 November 2026. The visitor-facing references name ancient scriptures,
 - https://vedabase.io/en/library/sb/12/2/ — Kalki as future prophecy; no portrait or calendar prediction is supplied.
 
 VedaBase is a locator for the texts and a particular translation/commentary tradition, not an additional shaastra. The display does not claim that every Hindu tradition uses the same list of ten avatars. Existing concise accounts are retained with the references above; modern BAPS publication recommendations were removed in accordance with this revision’s source restriction.
+
+## Expanded Rama and Krishna accounts — 8 November 2026
+
+The updated passages remain original exhibition prose, rather than quotations from a modern translation. Rama’s account is supported by Bhagavata Purana 9.10.4 and 8 (accepting exile), 9.10.16 and 23 (crossing to Lanka and defeating Ravana), and 9.10.50 (care for his subjects). The closing description of duty and power is an exhibition interpretation of those actions.
+
+Krishna’s account draws on Bhagavata Purana 10.25 (Govardhan), 10.44 (Kamsa), Bhagavad Gita 1.21–24 (Arjuna’s charioteer), 2.31 and 2.47 (duty and action without attachment), 18.65 (devotion), and 18.73 (Arjuna’s resolve). No additional scripture or modern publication recommendation was introduced.
+
+Research locators: https://vedabase.io/en/library/sb/9/10/50/ , https://vedabase.io/en/library/sb/10/25/ , https://vedabase.io/en/library/sb/10/44/ , https://vedabase.io/en/library/bg/1/21-22/ , https://vedabase.io/en/library/bg/2/31/ , https://vedabase.io/en/library/bg/2/47/ , https://vedabase.io/en/library/bg/18/65/ , https://vedabase.io/en/library/bg/18/73/ . The on-screen shaastra references remain plain text.
+
+The opening’s English rendering uses “I incarnate” and attributes the words to Bhagwan Shree Krishna. The Sanskrit and Roman verses are unchanged.

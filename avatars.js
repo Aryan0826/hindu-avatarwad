@@ -97,7 +97,7 @@ window.AVATAR_STORIES = [
     "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 7 · Chapters 5–10; manifestation in Chapter 8"
+        "reference": "Skandha 7 · Chapters 5–10; incarnation in Chapter 8"
       }
     ]
   },
@@ -162,7 +162,7 @@ window.AVATAR_STORIES = [
     "image": "assets/rama.png",
     "alt": "Shri Rama with a bow in a forest beside a distant palace",
     "purpose": "To uphold dharma and defeat Ravana.",
-    "mission": "As the prince of Ayodhya, Shri Rama honoured his father’s promise by accepting exile. With Sita, Lakshman and devoted allies, his life revealed fidelity to duty. He defeated Ravana, rescued Sita and returned to rule Ayodhya.",
+    "mission": "With a crown within reach, Bhagwan Shree Rama chose the forest rather than let his father’s word be broken. He endured exile with Sita and Lakshman, gathered devoted allies, and crossed the ocean to confront Ravana and bring Sita home. When the throne was finally his, he cared for his people as a father cares for his children. From forest path to royal court, duty remained greater than comfort, and power became a trust to protect.",
     "takeaway": "Choose truth and duty, even when keeping a promise asks for sacrifice.",
     "values": [
       "Truth",
@@ -172,7 +172,7 @@ window.AVATAR_STORIES = [
     "shaastra": [
       {
         "name": "Shrimad Bhagavata Purana",
-        "reference": "Skandha 9 · Chapter 10; exile: 9.10.4, 8 · Ravana’s defeat: 9.10.23"
+        "reference": "Skandha 9 · Chapter 10; especially verses 4, 8, 16, 23 and 50"
       }
     ]
   },
@@ -187,7 +187,7 @@ window.AVATAR_STORIES = [
     "image": "assets/krishna.png",
     "alt": "Shri Krishna with a flute and peacock-feather crown beside the Yamuna",
     "purpose": "To protect devotees and guide dharma.",
-    "mission": "Shri Krishna protected devotees and overcame oppressive rulers. In the Bhagavad Gita, he taught Arjuna selfless duty, spiritual wisdom and devotion to Bhagwan.",
+    "mission": "Bhagwan Shree Krishna lifted Govardhan to shelter the people of Vraja and ended Kamsa’s cruel rule. On Kurukshetra, he took the charioteer’s place beside Arjuna, meeting a warrior’s uncertainty with the wisdom of the Bhagavad Gita. He called Arjuna to act for dharma, without attachment to reward, and with devotion to Bhagwan. Under his guidance, doubt gave way to resolve. His strength sheltered the vulnerable; his words gave courage to do what was right.",
     "takeaway": "Act with dedication. Let wisdom and bhakti guide your choices.",
     "values": [
       "Bhakti",
@@ -201,7 +201,7 @@ window.AVATAR_STORIES = [
       },
       {
         "name": "Bhagavad Gita",
-        "reference": "Chapter 2 · Verse 47; Chapter 4 · Verses 7–8"
+        "reference": "1.21–24 · 2.31, 47 · 4.7–8 · 18.65, 73"
       }
     ]
   },
@@ -240,12 +240,12 @@ window.AVATAR_STORIES = [
     "sa": "कल्कि",
     "theme": "HOPE & RENEWAL",
     "short": "Renewal",
-    "form": "The avatar yet to manifest",
+    "form": "The avatar yet to incarnate",
     "summary": "A vision of renewal when dharma has been forgotten.",
     "image": null,
     "alt": "",
     "purpose": "To renew dharma at Kali Yuga’s end.",
-    "mission": "The Bhagavata Purana foretells Kalki as a future manifestation. He will overcome plunderers posing as rulers and restore conditions for a renewed age of righteousness. This is a scriptural prophecy, not an event already accomplished.",
+    "mission": "The Bhagavata Purana foretells Kalki as a future incarnation. He will overcome plunderers posing as rulers and restore conditions for a renewed age of righteousness. This is a scriptural prophecy, not an event already accomplished.",
     "takeaway": "The promise of renewal invites us to uphold dharma in our own lives today.",
     "values": [
       "Dharma",
