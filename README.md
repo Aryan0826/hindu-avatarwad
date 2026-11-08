@@ -21,3 +21,9 @@ Static files are at the repository root; no dependencies or build step are requi
 The existing GPT Site retains its configured audience. GitHub Pages currently publishes `main` from `/(root)`. This revision is on `exhibition-loop-gallery`; merge it into `main` when ready to update GitHub Pages. `.nojekyll` keeps publication in static mode. All local asset paths are relative, including under the project’s GitHub Pages subpath.
 
 Artwork consists of existing generated artistic interpretations; this revision changes layout and reference presentation, not the paintings. Google Fonts supplies Cormorant Garamond, DM Sans and Noto Serif Devanagari with system fallbacks. There are no API keys or visitor trackers.
+
+## Dimensional gallery refinement
+
+The gallery now fills the screen above its compact bottom controls. Fullscreen is in Display settings. Between Kalki and Matsya, a generously spaced “Why Bhagwan manifests” stop opens the Bhagavad Gita introduction. It is included in arrow, swipe and keyboard navigation without becoming an eleventh avatar.
+
+`gallery-depth.css` adds shallow perspective, beveled gold edges, pointer-responsive lighting, avatar motifs and responsive title plaques. Portrait widths follow available image height, reducing side padding while preserving the complete paintings. Automatic movement remains linear; manual arrows use an eased transition. Still and reduced-motion modes remove depth motion.
