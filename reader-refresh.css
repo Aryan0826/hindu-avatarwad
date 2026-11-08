@@ -28,10 +28,10 @@
 .exhibit-shaastra{padding-top:15px}.shaastra-list{gap:8px;margin-top:8px}.shaastra-list p{font:.78rem/1.4 var(--sans);gap:2px}.shaastra-list span{font-size:.69rem;line-height:1.4}
 /* A familiar native slider offers 56 speeds, retaining 1× as the default. */
 .speed-setting{margin:18px 0 20px}.speed-heading{display:flex;flex-direction:column;gap:8px}.speed-heading label{margin:0!important;font-size:.85rem}.speed-heading output{font:400 1.6rem/1.2 var(--serif);color:#e7c78a;min-height:32px}
-#slide-duration{display:block;width:100%;height:44px;margin:10px 0 0;padding:0;background:transparent;accent-color:#d5b47a;cursor:pointer;appearance:none;-webkit-appearance:none}
-#slide-duration::-webkit-slider-runnable-track{height:5px;border-radius:4px;background:linear-gradient(90deg,#d5b47a var(--range-progress,27.27%),#d5b47a35 var(--range-progress,27.27%))}
-#slide-duration::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;margin-top:-9.5px;border:2px solid #f0d8a5;background:#bc9558;box-shadow:0 0 0 5px #d5b47a12,0 3px 8px #0005}
-#slide-duration::-moz-range-track{height:5px;border-radius:4px;background:#d5b47a35}#slide-duration::-moz-range-progress{background:#d5b47a;height:5px}#slide-duration::-moz-range-thumb{width:22px;height:22px;border-radius:50%;border:2px solid #f0d8a5;background:#bc9558}
+.settings-range{display:block;width:100%;height:44px;margin:10px 0 0;padding:0;background:transparent;accent-color:#d5b47a;cursor:pointer;appearance:none;-webkit-appearance:none}
+.settings-range::-webkit-slider-runnable-track{height:5px;border-radius:4px;background:linear-gradient(90deg,#d5b47a var(--range-progress,27.27%),#d5b47a35 var(--range-progress,27.27%))}
+.settings-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;margin-top:-9.5px;border:2px solid #f0d8a5;background:#bc9558;box-shadow:0 0 0 5px #d5b47a12,0 3px 8px #0005}
+.settings-range::-moz-range-track{height:5px;border-radius:4px;background:#d5b47a35}.settings-range::-moz-range-progress{background:#d5b47a;height:5px}.settings-range::-moz-range-thumb{width:22px;height:22px;border-radius:50%;border:2px solid #f0d8a5;background:#bc9558}
 .speed-scale{display:flex;align-items:center;justify-content:space-between;font:.65rem/1.4 var(--sans);color:#aebbad}.reset-speed{display:block;margin:8px 0 0 auto;padding:8px 0 8px 12px;min-height:36px;background:none;color:#d6b87c;font-size:.73rem;text-decoration:underline;text-underline-offset:4px}
 /* A small increase keeps the painting indices discreet but easier to see. */
 #gallery-app .card-num{font-size:.7rem;width:32px;height:32px}

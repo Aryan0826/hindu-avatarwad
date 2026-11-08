@@ -6,13 +6,15 @@ const viewport = $('gallery-viewport'), track = $('gallery-track'), group = $('g
 let active = 0, openingStep = 1, paused = false, hovered = false, keyboardFocus = false;
 let offset = 0, groupWidth = 0, stride = 0, cardWidth = 0, viewportWidth = 0, lastFrame = 0, raf = 0, motionOptIn = false;
 let lastActivity = Date.now(), drag = null, suppressClick = false;
+let hoverTimer = 0, hoverUntil = 0, pointerX = null, pointerY = null;
 let positions = [], visibleStops = [], galleryStop = 0, tiltCard = null, tiltBounds = null, navigation = null;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-let settings = {duration:12000,idle:180000,gentle:reducedMotion.matches};
+let settings = {duration:12000,idle:180000,hoverDelay:5000,gentle:reducedMotion.matches};
 try {
  const saved = JSON.parse(localStorage.getItem('avatar-gallery-settings') || 'null');
  if(saved && Number.isFinite(saved.duration) && saved.duration>=4000 && saved.duration<=48000 && [60000,90000,120000,180000].includes(saved.idle)) settings = {...settings,...saved};
 } catch {}
+if(!Number.isFinite(settings.hoverDelay)||settings.hoverDelay<1000||settings.hoverDelay>30000)settings.hoverDelay=5000;
 document.documentElement.classList.toggle('gentle', settings.gentle);
 const cards = avatars.map((a,i) => {
  const button = document.createElement('button');
@@ -104,9 +106,24 @@ track.addEventListener('click',e=>{
  if(card.dataset.intro){if(!suppressClick)showOpening(0);return;}
  if(suppressClick){e.preventDefault();return;}openDetail(Number(card.dataset.index));
 });
-viewport.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){hovered=true;updateMotion();}});
+function clearHoverPause(){
+ if(hoverTimer)clearTimeout(hoverTimer);
+ hoverTimer=0;hoverUntil=0;hovered=false;pointerX=null;pointerY=null;
+}
+function finishHoverPause(){
+ const remaining=hoverUntil-performance.now();
+ if(remaining>0){hoverTimer=setTimeout(finishHoverPause,remaining);return;}
+ hoverTimer=0;hovered=false;clearTilt();updateMotion();
+}
+function pauseForPointer(e){
+ if(e.pointerType!=='mouse'||(e.clientX===pointerX&&e.clientY===pointerY))return;
+ pointerX=e.clientX;pointerY=e.clientY;hoverUntil=performance.now()+settings.hoverDelay;
+ if(!hovered){hovered=true;updateMotion();}
+ if(!hoverTimer)hoverTimer=setTimeout(finishHoverPause,settings.hoverDelay);
+}
+viewport.addEventListener('pointerenter',pauseForPointer);
 function clearTilt(){if(tiltCard){tiltCard.style.removeProperty('--tilt-x');tiltCard.style.removeProperty('--tilt-y');tiltCard=null;tiltBounds=null;}}
-viewport.addEventListener('pointerleave',()=>{hovered=false;clearTilt();if(drag&&!drag.moved)drag=null;updateMotion();});
+viewport.addEventListener('pointerleave',()=>{clearHoverPause();clearTilt();if(drag&&!drag.moved)drag=null;updateMotion();});
 viewport.addEventListener('focusin',e=>{
  if(e.target.matches('.avatar-card:focus-visible,.intro-stop:focus-visible')){keyboardFocus=true;viewport.scrollLeft=0;moveTo(e.target.dataset.intro?10:Number(e.target.dataset.index));updateMotion();}
 });
@@ -123,6 +140,7 @@ viewport.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;navigation=null;clearTilt();drag={id:e.pointerId,x:e.clientX,start:offset,moved:false};updateMotion();
 });
 viewport.addEventListener('pointermove',e=>{
+ pauseForPointer(e);
  if(!drag){
   if(e.pointerType!=='mouse'||isStill())return;
   const card=e.target.closest('.avatar-card');
@@ -147,7 +165,7 @@ $('play').addEventListener('click',()=>{
  paused=!paused;updateMotion();
 });
 function modalOpen(dialog){
- navigation=null;clearTilt();dialogs.filter(d=>d!==dialog&&d.open).forEach(d=>d.close());dialog.showModal();document.documentElement.classList.add('modal-open');lastActivity=Date.now();updateMotion();window.galleryCursor?.raise();
+ navigation=null;clearHoverPause();clearTilt();dialogs.filter(d=>d!==dialog&&d.open).forEach(d=>d.close());dialog.showModal();document.documentElement.classList.add('modal-open');lastActivity=Date.now();updateMotion();window.galleryCursor?.raise();
 }
 function modalClosed(){
  if(!dialogs.some(d=>d.open))document.documentElement.classList.remove('modal-open');
@@ -174,7 +192,7 @@ function toast(message){$('toast').textContent=message;$('toast').hidden=false;s
 function fullscreenFallback(){$('fullscreen-status').hidden=false;$('fullscreen-status').textContent='Use your browser’s fullscreen option (usually F11).';}
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else fullscreenFallback();}catch{fullscreenFallback();}});
 document.addEventListener('fullscreenchange',()=>{const label=document.fullscreenElement?'Exit fullscreen':'Enter fullscreen';$('fullscreen').setAttribute('aria-label',label);$('fullscreen-label').textContent=label;window.galleryCursor?.raise();});
-$('display-settings').addEventListener('click',()=>{$('slide-duration').value=String(Math.round(1200000/settings.duration/5)*5);syncSpeedPreview();$('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;modalOpen($('settings-dialog'));});
+$('display-settings').addEventListener('click',()=>{$('slide-duration').value=String(Math.round(1200000/settings.duration/5)*5);syncSpeedPreview();$('hover-delay').value=String(settings.hoverDelay/1000);syncHoverPreview();$('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;modalOpen($('settings-dialog'));});
 $('close-settings').addEventListener('click',()=>$('settings-dialog').close());
 function syncSpeedPreview(){
  const speed=Number($('slide-duration').value)/100;
@@ -186,8 +204,16 @@ function syncSpeedPreview(){
 $('slide-duration').addEventListener('input',syncSpeedPreview);
 $('reset-speed').addEventListener('click',()=>{$('slide-duration').value='100';syncSpeedPreview();});
 syncSpeedPreview();
+function syncHoverPreview(){
+ const seconds=Number($('hover-delay').value);
+ const label=`${seconds} ${seconds===1?'second':'seconds'}`;
+ $('hover-delay-value').textContent=label;$('hover-delay').setAttribute('aria-valuetext',label);
+ $('hover-delay').style.setProperty('--range-progress',`${(seconds-1)/29*100}%`);
+}
+$('hover-delay').addEventListener('input',syncHoverPreview);
+syncHoverPreview();
 $('save-settings').addEventListener('click',()=>{
- settings={duration:1200000/Number($('slide-duration').value),idle:Number($('idle-duration').value),gentle:$('reduce-motion').checked};
+ settings={duration:1200000/Number($('slide-duration').value),idle:Number($('idle-duration').value),hoverDelay:Number($('hover-delay').value)*1000,gentle:$('reduce-motion').checked};
  motionOptIn=!settings.gentle;document.documentElement.classList.toggle('gentle',settings.gentle);try{localStorage.setItem('avatar-gallery-settings',JSON.stringify(settings));}catch{}
  $('settings-dialog').close();updateMotion();
 });
@@ -202,11 +228,11 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('visibilitychange',()=>{if(document.hidden)navigation=null;updateMotion();});reducedMotion.addEventListener('change',updateMotion);
 setInterval(()=>{
  const open=dialogs.find(d=>d.open);if(!open||document.hidden)return;const idle=Date.now()-lastActivity;
- if(idle>=settings.idle){open.close();paused=false;hovered=false;keyboardFocus=false;updateMotion();}
+ if(idle>=settings.idle){open.close();paused=false;clearHoverPause();keyboardFocus=false;updateMotion();}
  else if(open===$('detail-dialog')&&idle>=settings.idle-10000){$('idle-notice').hidden=false;$('idle-count').textContent=String(Math.ceil((settings.idle-idle)/1000));}
 },500);
 function showOpening(step){
- navigation=null;clearTilt();
+ navigation=null;clearHoverPause();clearTilt();
  openingStep=step>0?1:0;dialogs.filter(d=>d.open).forEach(d=>d.close());const isOpening=openingStep===0;
  $('opening').hidden=!isOpening;$('gallery-app').hidden=isOpening;document.documentElement.classList.toggle('opening-active',isOpening);
  if(isOpening)document.querySelector('.opening-panel').scrollTo({top:0,left:0,behavior:'instant'});

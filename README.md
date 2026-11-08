@@ -10,7 +10,7 @@ Rama and Krishna have expanded, original, scripture-supported accounts. They des
 
 ## Controls and access
 
-- Hover, keyboard focus or an open exhibit pauses automatic motion. Arrow controls, touch dragging, touchpad wheel input and keyboard arrows support manual exploration. Automatic movement is linear; manual arrows ease between stops.
+- Mouse movement pauses automatic motion; after five seconds with a stationary pointer it resumes. Display settings offers a 1–30 second delay slider, saved in this browser. Keyboard focus or an open exhibit continues to pause motion. Arrow controls, touch dragging, touchpad wheel input and keyboard arrows support manual exploration. Automatic movement is linear; manual arrows ease between stops.
 - One accessible set of cards is backed by visual copies for the seamless loop. Copies remain tappable without becoming focus targets.
 - Display settings contains fullscreen, inactivity duration, still mode and a native speed slider. The slider offers 0.25×–3× in 0.05× increments, with live pace labels and Reset to 1×. The previous 12-second-per-card pace remains the 1× default, and browser preferences remain compatible.
 - Reduced-motion preferences start the gallery still and remove depth motion. Visitors may explicitly choose Play. Inactivity returns an open exhibit to the gallery after three minutes by default, with a ten-second warning.
@@ -20,7 +20,7 @@ Rama and Krishna have expanded, original, scripture-supported accounts. They des
 
 Static files are at the repository root; there are no dependencies or build steps. `avatars.js` holds the content and shaastra references; `app.js` controls navigation and motion. `gallery-depth.css` contains the dimensional gallery, and `reader-refresh.css` contains the current exhibit, introduction, close-control and speed-slider refinements. Earlier styles retain the established visual identity.
 
-The existing GPT Site retains its configured audience. GitHub Pages publishes `main` from `/(root)`. The gallery-first and incarnation-reader refinements are on `gallery-incarnation-refinements`; merge that branch into `main` when ready to update Pages. `.nojekyll` keeps publication in static mode. All local asset paths are relative. Google Fonts provides Cormorant Garamond, DM Sans and Noto Serif Devanagari, with system fallbacks. There are no API keys or visitor trackers.
+The existing GPT Site retains its configured audience. GitHub Pages publishes `main` from `/(root)`. `.nojekyll` keeps publication in static mode. All local asset paths are relative. Google Fonts provides Cormorant Garamond, DM Sans and Noto Serif Devanagari, with system fallbacks. There are no API keys or visitor trackers.
 
 Matsya’s intent uses the requested original exhibition wording about safeguarding creation, set in the same Cormorant Garamond heading style used throughout the exhibition. It is interpretive exhibition prose, not a quoted shaastra verse. All exhibit panels use “Intent behind incarnation”.
 
