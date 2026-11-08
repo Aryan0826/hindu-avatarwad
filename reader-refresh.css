@@ -13,7 +13,7 @@
 .reader-painting{display:block;position:relative;width:100%;height:100%;min-height:0}
 .reader-painting img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 24%}
 .detail-future{width:100%;height:100%;border:0;border-radius:0;background:radial-gradient(ellipse,#d5b47a0b,transparent 75%)}
-.exhibit-panel{display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden;padding:28px clamp(28px,3.8vw,62px);gap:22px}
+.exhibit-panel{display:flex;flex-direction:column;height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:28px clamp(28px,3.8vw,62px);gap:22px}
 .reader-identity{flex:0 0 auto;position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:18px;row-gap:5px;align-items:baseline;width:100%;max-width:860px;margin:0 auto;text-align:left;padding:0 0 18px;border-bottom:1px solid var(--line)}
 .reader-identity #detail-theme{grid-column:1/-1;margin:0;font:500 .62rem/1.5 var(--sans);letter-spacing:.13em;color:#d9bb80}
 .reader-identity h2{grid-column:1;grid-row:2;font:400 clamp(2.5rem,3.4vw,4rem)/1.04 var(--serif);letter-spacing:-.03em;margin:1px 0}
@@ -23,7 +23,7 @@
 .exhibit-purpose .intent-question{font:italic 400 1.28rem/1.3 var(--serif);margin:0 0 8px;color:#d9bc84}
 .exhibit-purpose h3{font:400 clamp(1.9rem,2.6vw,3rem)/1.08 var(--serif);letter-spacing:-.025em;max-width:34ch;text-wrap:balance;margin:0 0 14px;color:#f0e9d9}
 .exhibit-purpose>p:not(.intent-question){font:400 clamp(.97rem,1.08vw,1.16rem)/1.58 var(--sans);color:#c7d2c7;max-width:75ch;margin:0;text-wrap:pretty}
-.exhibit-takeaway{padding-left:18px;border-left:1px solid #d8b87d}.exhibit-takeaway>p{font:400 clamp(1.2rem,1.6vw,1.8rem)/1.28 var(--serif);margin:7px 0 9px;max-width:48ch;color:#e8c98c}
+.exhibit-takeaway{padding-left:18px;border-left:1px solid #d8b87d}.exhibit-takeaway>p{font:400 clamp(1.2rem,1.6vw,1.8rem)/1.28 var(--serif);margin:7px 0 9px;max-width:none;color:#e8c98c}
 .exhibit-values{gap:5px 18px}.exhibit-values li{font-size:.7rem}.exhibit-label{font-size:.55rem;line-height:1.5;letter-spacing:.13em}
 .exhibit-shaastra{padding-top:15px}.shaastra-list{gap:8px;margin-top:8px}.shaastra-list p{font:.78rem/1.4 var(--sans);gap:2px}.shaastra-list span{font-size:.69rem;line-height:1.4}
 /* A familiar native slider offers 56 speeds, retaining 1× as the default. */

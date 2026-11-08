@@ -6,7 +6,7 @@ The gallery continuously moves ten large avatar portraits along a shallow 3D sta
 
 Selecting a portrait pauses movement and opens its exhibit. The image fills the left column; a small avatar name in the top toolbar replaces the repeated identity block. Intent, concise account, gold takeaway and plain shaastra references are visible together. The reference section is labelled “Find out more · Shaastra” and contains no hyperlinks. A large, accessibly labelled X closes the exhibit. Previous/next avatar controls remain visible.
 
-Rama and Krishna have expanded, original, scripture-supported accounts. They describe actions and choices rather than declaring the figures to be role models. Exact source locators and distinctions between scriptural events and exhibition interpretations are in `docs/exhibition-sources.md`. Visible English uses incarnate/incarnation where appropriate.
+All ten avatars present the narrative supplied by the project owner, with intent, story, essence and values. Existing shaastra-reference entries are retained unchanged. Exact source locators and distinctions between scriptural events and exhibition interpretations are in `docs/exhibition-sources.md`. Visible English uses incarnate/incarnation where appropriate.
 
 ## Controls and access
 
@@ -22,6 +22,8 @@ Static files are at the repository root; there are no dependencies or build step
 
 The existing GPT Site retains its configured audience. GitHub Pages publishes `main` from `/(root)`. `.nojekyll` keeps publication in static mode. All local asset paths are relative. Google Fonts provides Cormorant Garamond, DM Sans and Noto Serif Devanagari, with system fallbacks. There are no API keys or visitor trackers.
 
-Matsya’s intent uses the requested original exhibition wording about safeguarding creation, set in the same Cormorant Garamond heading style used throughout the exhibition. It is interpretive exhibition prose, not a quoted shaastra verse. All exhibit panels use “Intent behind incarnation”.
+The supplied narratives are exhibition prose rather than quotations from shaastra. All exhibit panels use “Intent behind the incarnation” and “Essence of the avatar”.
 
 Typography is consistent by role: Cormorant Garamond for English headings, DM Sans for body text and controls, and Noto Serif Devanagari for Sanskrit. All avatar intent headings share the same font, weight and responsive size.
+
+The supplied-content revision is on `avatar-content-refresh`. The existing images, gallery behavior and shaastra references are unchanged. The essence uses the full reading width; smaller displays can scroll the reading panel when necessary to keep all supplied text accessible.
