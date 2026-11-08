@@ -156,7 +156,7 @@ function finishDrag(e){if(!drag||drag.id!==e.pointerId)return;drag=null;updateMo
 viewport.addEventListener('pointerup',finishDrag);viewport.addEventListener('pointercancel',finishDrag);
 viewport.addEventListener('lostpointercapture',e=>{if(drag?.id===e.pointerId){drag=null;updateMotion();}});
 viewport.addEventListener('wheel',e=>{
- if(e.ctrlKey)return;const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
+ if(e.defaultPrevented||e.ctrlKey)return;const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
  if(delta){e.preventDefault();navigation=null;offset+=delta*(e.deltaMode===1?16:e.deltaMode===2?viewportWidth:1);paint();}
 },{passive:false});
 $('prev').addEventListener('click',()=>stepGallery(-1));$('next').addEventListener('click',()=>stepGallery(1));
@@ -189,9 +189,38 @@ function renderDetail(){
 function openDetail(index){setActive(index);renderDetail();if(!$('detail-dialog').open)modalOpen($('detail-dialog'));lastActivity=Date.now();}
 $('close-detail').addEventListener('click',()=>$('detail-dialog').close());$('detail-prev').addEventListener('click',()=>openDetail(active-1));$('detail-next').addEventListener('click',()=>openDetail(active+1));
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;setTimeout(()=>$('toast').hidden=true,4500);}
-function fullscreenFallback(){$('fullscreen-status').hidden=false;$('fullscreen-status').textContent='Use your browser’s fullscreen option (usually F11).';}
+function isExhibitionFullscreen(){return document.fullscreenElement===document.documentElement;}
+function fullscreenFallback(){$('fullscreen-status').hidden=false;$('fullscreen-status').textContent='This browser could not start fullscreen exhibition mode. Try opening the gallery directly in your browser.';}
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else fullscreenFallback();}catch{fullscreenFallback();}});
-document.addEventListener('fullscreenchange',()=>{const label=document.fullscreenElement?'Exit fullscreen':'Enter fullscreen';$('fullscreen').setAttribute('aria-label',label);$('fullscreen-label').textContent=label;window.galleryCursor?.raise();});
+document.addEventListener('fullscreenchange',()=>{
+ const active=isExhibitionFullscreen();
+ document.documentElement.classList.toggle('exhibition-fullscreen',active);
+ $('display-settings').hidden=active;
+ $('fullscreen-status').hidden=true;
+ if(active){
+  window.getSelection()?.removeAllRanges();
+  if($('settings-dialog').open){
+   applyDisplaySettings();$('settings-dialog').close();
+   $('gallery-page-title').focus({preventScroll:true});
+  }
+ }
+ updateMotion();window.galleryCursor?.raise();
+});
+// Keep pointer gestures focused on browsing while the site owns fullscreen.
+for(const type of ['contextmenu','selectstart','dragstart','auxclick','copy','cut','paste']){
+ document.addEventListener(type,e=>{if(isExhibitionFullscreen())e.preventDefault();},true);
+}
+document.addEventListener('mousedown',e=>{
+ if(isExhibitionFullscreen()&&e.button!==0)e.preventDefault();
+},true);
+document.addEventListener('wheel',e=>{
+ if(isExhibitionFullscreen()&&(e.ctrlKey||e.metaKey))e.preventDefault();
+},{capture:true,passive:false});
+const exhibitionShortcuts=new Set(['a','c','x','v','f','g','p','s','+','-','=','0']);
+document.addEventListener('keydown',e=>{
+ if(!isExhibitionFullscreen())return;
+ if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')||((e.ctrlKey||e.metaKey)&&exhibitionShortcuts.has(e.key.toLowerCase())))e.preventDefault();
+},true);
 $('display-settings').addEventListener('click',()=>{$('slide-duration').value=String(Math.round(1200000/settings.duration/5)*5);syncSpeedPreview();$('hover-delay').value=String(settings.hoverDelay/1000);syncHoverPreview();$('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;modalOpen($('settings-dialog'));});
 $('close-settings').addEventListener('click',()=>$('settings-dialog').close());
 function syncSpeedPreview(){
@@ -212,14 +241,18 @@ function syncHoverPreview(){
 }
 $('hover-delay').addEventListener('input',syncHoverPreview);
 syncHoverPreview();
-$('save-settings').addEventListener('click',()=>{
+function applyDisplaySettings(){
  settings={duration:1200000/Number($('slide-duration').value),idle:Number($('idle-duration').value),hoverDelay:Number($('hover-delay').value)*1000,gentle:$('reduce-motion').checked};
  motionOptIn=!settings.gentle;document.documentElement.classList.toggle('gentle',settings.gentle);try{localStorage.setItem('avatar-gallery-settings',JSON.stringify(settings));}catch{}
+}
+$('save-settings').addEventListener('click',()=>{
+ applyDisplaySettings();
  $('settings-dialog').close();updateMotion();
 });
 for(const event of ['pointerdown','pointermove','keydown','wheel','touchstart','scroll'])document.addEventListener(event,()=>{lastActivity=Date.now();$('idle-notice').hidden=true;},{passive:true,capture:event==='scroll'});
 $('keep-reading').addEventListener('click',()=>{lastActivity=Date.now();$('idle-notice').hidden=true;});
 document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'&&isExhibitionFullscreen())return;
  if(dialogs.some(d=>d.open)||['SELECT','INPUT','TEXTAREA'].includes(e.target.tagName))return;
  if(openingStep===0){if(e.key==='ArrowRight'||e.key==='Escape'){e.preventDefault();showOpening(1);}return;}
  if(viewport.contains(e.target))return;

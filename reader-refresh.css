@@ -54,3 +54,7 @@
 .reader-title{margin:0;min-width:0;font:500 clamp(1.15rem,1.7vw,1.55rem)/1.15 var(--serif);letter-spacing:.01em;color:#ead3a5}
 /* All avatar intent headings share the site serif and responsive type scale. */
 @media(max-height:520px) and (min-width:651px){.reader-title{font-size:1.2rem}}
+
+/* Fullscreen visitor mode leaves scrolling and card activation available. */
+.exhibition-fullscreen,.exhibition-fullscreen *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.exhibition-fullscreen img{-webkit-user-drag:none}

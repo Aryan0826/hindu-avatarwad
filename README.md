@@ -27,3 +27,5 @@ The supplied narratives are exhibition prose rather than quotations from shaastr
 Typography is consistent by role: Cormorant Garamond for English headings, DM Sans for body text and controls, and Noto Serif Devanagari for Sanskrit. All avatar intent headings share the same font, weight and responsive size.
 
 The supplied-content revision is on `avatar-content-refresh`. The existing images, gallery behavior and shaastra references are unchanged. The essence uses the full reading width; smaller displays can scroll the reading panel when necessary to keep all supplied text accessible.
+
+Enter fullscreen from Display settings to start exhibition mode. Display settings close and stay hidden while fullscreen. Visitors can browse with scroll, swipe and primary clicks, while text selection, image dragging, secondary-click menus and common page shortcuts are disabled within the gallery. Press Esc to exit fullscreen and access settings again.
