@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en" class="opening-active">
+<html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#101b26">
 <meta name="description" content="Explore Bhagwan’s incarnations through stories of dharma and devotion. An interactive gallery for Light Beyond Lamps, Diwali 2026.">
 <title>The Avatar Gallery · Light Beyond Lamps</title>
-<link rel="stylesheet" href="style.css?v=27"><link rel="stylesheet" href="responsive.css?v=27"><link rel="stylesheet" href="cursors.css?v=27"><link rel="stylesheet" href="stories.css?v=27"><link rel="stylesheet" href="exhibition.css?v=27"><link rel="stylesheet" href="loop-gallery.css?v=27"><link rel="stylesheet" href="gallery-depth.css?v=27"><link rel="stylesheet" href="reader-refresh.css?v=27"><script defer src="avatars.js?v=27"></script><script defer src="cursor.js?v=27"></script><script defer src="app.js?v=27"></script>
+<link rel="stylesheet" href="style.css?v=28"><link rel="stylesheet" href="responsive.css?v=28"><link rel="stylesheet" href="cursors.css?v=28"><link rel="stylesheet" href="stories.css?v=28"><link rel="stylesheet" href="exhibition.css?v=28"><link rel="stylesheet" href="loop-gallery.css?v=28"><link rel="stylesheet" href="gallery-depth.css?v=28"><link rel="stylesheet" href="reader-refresh.css?v=28"><script defer src="avatars.js?v=28"></script><script defer src="cursor.js?v=28"></script><script defer src="app.js?v=28"></script>
 </head>
 <body>
 <div class="ambient" aria-hidden="true"></div>
-<section id="opening" class="opening" aria-labelledby="opening-title">
+<section id="opening" class="opening" aria-labelledby="opening-title" hidden>
  <div class="opening-halo" aria-hidden="true"></div>
  <div class="opening-panel">
   <header class="opening-heading"><svg class="title-ornament" viewBox="0 0 120 40" aria-hidden="true"><path d="M0 25H34M86 25H120M60 29C46 22 45 15 47 10C55 11 59 18 60 29C61 18 65 11 73 10C75 15 74 22 60 29ZM60 27C51 15 54 8 60 3C66 8 69 15 60 27Z"/></svg><h1 id="opening-title" tabindex="-1">Why does Bhagwan <em>incarnate on Earth?</em></h1></header>
@@ -27,7 +27,7 @@
  </div>
  <button id="opening-close" class="exhibit-close opening-close" aria-label="Close introduction and open avatar gallery"><span aria-hidden="true">×</span></button>
 </section>
-<div id="gallery-app" hidden>
+<div id="gallery-app">
 <main class="procession-main" aria-label="The ten principal avatars">
  <h1 id="gallery-page-title" class="sr-only" tabindex="-1">The ten principal avatars</h1>
  <section id="gallery-viewport" class="gallery-viewport" aria-label="Continuously looping avatar gallery" aria-roledescription="carousel">
@@ -38,10 +38,10 @@
 </div>
 <dialog id="detail-dialog" class="detail-dialog reader-dialog" aria-labelledby="detail-name">
  <div class="reader-shell">
-  <header class="reader-toolbar"><span id="detail-count" class="reader-counter"></span><button class="exhibit-close" id="close-detail" aria-label="Return to gallery"><span aria-hidden="true">×</span></button></header>
+  <header class="reader-toolbar"><h2 id="detail-name" class="reader-title"></h2><button class="exhibit-close" id="close-detail" aria-label="Return to gallery"><span aria-hidden="true">×</span></button></header>
   <div class="reader-layout" id="reader-layout">
    <aside class="reader-art" id="reader-art"><div class="reader-painting"><img id="detail-img" alt=""><div id="detail-future" class="detail-future" hidden><span lang="sa">कल्कि</span><p>Yet to incarnate.</p></div></div></aside>
-   <article class="exhibit-panel" id="reader-content" aria-label="Avatar purpose and values"><header class="reader-identity"><p id="detail-theme"></p><h2 id="detail-name"></h2><p id="detail-form"></p><span id="detail-sanskrit" lang="sa"></span></header><div id="exhibit-content" class="exhibit-body"></div></article>
+   <article class="exhibit-panel" id="reader-content" aria-label="Avatar purpose and values"><div id="exhibit-content" class="exhibit-body"></div></article>
   </div>
   <footer class="reader-navigation"><button id="detail-prev" class="reader-nav-button" aria-label="Previous avatar"><span aria-hidden="true">←</span><span><small>PREVIOUS</small><strong id="previous-name"></strong></span></button><button id="detail-next" class="reader-nav-button" aria-label="Next avatar"><span><small>NEXT</small><strong id="next-name"></strong></span><span aria-hidden="true">→</span></button></footer>
  </div>

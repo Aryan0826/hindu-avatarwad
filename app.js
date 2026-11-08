@@ -3,7 +3,7 @@ const $ = id => document.getElementById(id);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dialogs = [$('detail-dialog'), $('settings-dialog')];
 const viewport = $('gallery-viewport'), track = $('gallery-track'), group = $('gallery-grid');
-let active = 0, openingStep = 0, paused = false, hovered = false, keyboardFocus = false;
+let active = 0, openingStep = 1, paused = false, hovered = false, keyboardFocus = false;
 let offset = 0, groupWidth = 0, stride = 0, cardWidth = 0, viewportWidth = 0, lastFrame = 0, raf = 0, motionOptIn = false;
 let lastActivity = Date.now(), drag = null, suppressClick = false;
 let positions = [], visibleStops = [], galleryStop = 0, tiltCard = null, tiltBounds = null, navigation = null;
@@ -158,14 +158,14 @@ dialogs.forEach(d=>{
  d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();});
 });
 function renderDetail(){
- const a=avatars[active];$('detail-count').textContent=`THE AVATAR GALLERY / ${String(active+1).padStart(2,'0')} OF 10`;
+ const a=avatars[active];
  $('reader-layout').dataset.avatar=a.id;
  $('reader-art').hidden=false;$('reader-layout').classList.toggle('future-exhibit',!a.image);
  $('detail-img').hidden=!a.image;$('detail-future').hidden=!!a.image;
  if(a.image){$('detail-img').src=a.image;$('detail-img').alt=a.alt;}else{$('detail-img').removeAttribute('src');$('detail-img').alt='';}
- $('detail-name').textContent=a.name;$('detail-theme').textContent=a.theme;$('detail-form').textContent=a.form;$('detail-sanskrit').textContent=a.sa;
+ $('detail-name').textContent=a.name;
  $('previous-name').textContent=avatars[(active+avatars.length-1)%avatars.length].name;$('next-name').textContent=avatars[(active+1)%avatars.length].name;
- $('exhibit-content').innerHTML=`<section class="exhibit-purpose" aria-labelledby="intent-title"><p class="intent-question">Intent behind this avatar</p><h3 id="intent-title">${esc(a.purpose)}</h3><p>${esc(a.mission)}</p></section><aside class="exhibit-takeaway"><span class="exhibit-label">${a.id==='krishna'?'TEACHING TO LIVE BY':'MEANING TO CARRY WITH YOU'}</span><p>${esc(a.takeaway)}</p><ul class="exhibit-values" aria-label="Values highlighted">${a.values.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></aside><section class="exhibit-shaastra" aria-label="Shaastra references to find out more"><span class="exhibit-label">FIND OUT MORE · SHAASTRA</span><div class="shaastra-list">${a.shaastra.map(g=>`<p><strong>${esc(g.name)}</strong><span>${esc(g.reference)}</span></p>`).join('')}</div></section>`;
+ $('exhibit-content').innerHTML=`<section class="exhibit-purpose" aria-labelledby="intent-title"><p class="intent-question">Intent behind incarnation</p><h3 id="intent-title">${esc(a.purpose)}</h3><p>${esc(a.mission)}</p></section><aside class="exhibit-takeaway"><span class="exhibit-label">${a.id==='krishna'?'TEACHING TO LIVE BY':'MEANING TO CARRY WITH YOU'}</span><p>${esc(a.takeaway)}</p><ul class="exhibit-values" aria-label="Values highlighted">${a.values.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></aside><section class="exhibit-shaastra" aria-label="Shaastra references to find out more"><span class="exhibit-label">FIND OUT MORE · SHAASTRA</span><div class="shaastra-list">${a.shaastra.map(g=>`<p><strong>${esc(g.name)}</strong><span>${esc(g.reference)}</span></p>`).join('')}</div></section>`;
  $('reader-content').scrollTo({top:0,left:0,behavior:'instant'});
 }
 function openDetail(index){setActive(index);renderDetail();if(!$('detail-dialog').open)modalOpen($('detail-dialog'));lastActivity=Date.now();}
@@ -215,4 +215,4 @@ function showOpening(step){
 }
 $('opening-close').addEventListener('click',()=>showOpening(1));
 new ResizeObserver(()=>{if(openingStep===1)measure();}).observe(viewport);
-showOpening(0);setActive(0);
+showOpening(1);setActive(0);

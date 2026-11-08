@@ -11,7 +11,7 @@ window.AVATAR_STORIES = [
     "image": "assets/matsya-v4.png",
     "alt": "A radiant golden Matsya with flowing fins, guiding Manu’s boat through sunlit floodwaters without a horn or ornaments",
     "artNote": "The simple, horn-free fish is the exhibition’s requested artistic interpretation; traditional Matsya iconography and textual descriptions vary.",
-    "purpose": "To preserve life and sacred wisdom.",
+    "purpose": "To safeguard the very essence of creation, when existence itself stood on the brink of oblivion.",
     "mission": "In this form, Bhagwan guided Satyavrata, the future Manu, and the sages through the cosmic flood. He safeguarded seeds for life to begin again and recovered the Vedas from Hayagriva.",
     "takeaway": "Protect the vulnerable. Preserve the wisdom entrusted to you.",
     "values": [
