@@ -58,3 +58,7 @@
 /* Fullscreen visitor mode leaves scrolling and card activation available. */
 .exhibition-fullscreen,.exhibition-fullscreen *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .exhibition-fullscreen img{-webkit-user-drag:none}
+
+/* Permit pan and tap without browser pinch or double-tap zoom. */
+.exhibition-fullscreen,.exhibition-fullscreen *{touch-action:pan-x pan-y}
+.exhibition-fullscreen .gallery-viewport,.exhibition-fullscreen .gallery-viewport *{touch-action:pan-y}

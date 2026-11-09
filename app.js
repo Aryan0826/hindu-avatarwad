@@ -189,11 +189,15 @@ function renderDetail(){
 function openDetail(index){setActive(index);renderDetail();if(!$('detail-dialog').open)modalOpen($('detail-dialog'));lastActivity=Date.now();}
 $('close-detail').addEventListener('click',()=>$('detail-dialog').close());$('detail-prev').addEventListener('click',()=>openDetail(active-1));$('detail-next').addEventListener('click',()=>openDetail(active+1));
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;setTimeout(()=>$('toast').hidden=true,4500);}
-function isExhibitionFullscreen(){return document.fullscreenElement===document.documentElement;}
+const exhibitionLaunch=new URLSearchParams(window.location.search).get('exhibition')==='1';
+const browserFullscreen=matchMedia('(display-mode: fullscreen)');
+function isExhibitionMode(){
+ return exhibitionLaunch||browserFullscreen.matches||document.fullscreenElement===document.documentElement;
+}
 function fullscreenFallback(){$('fullscreen-status').hidden=false;$('fullscreen-status').textContent='This browser could not start fullscreen exhibition mode. Try opening the gallery directly in your browser.';}
 $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else fullscreenFallback();}catch{fullscreenFallback();}});
-document.addEventListener('fullscreenchange',()=>{
- const active=isExhibitionFullscreen();
+function syncExhibitionMode(){
+ const active=isExhibitionMode();
  document.documentElement.classList.toggle('exhibition-fullscreen',active);
  $('display-settings').hidden=active;
  $('fullscreen-status').hidden=true;
@@ -205,20 +209,26 @@ document.addEventListener('fullscreenchange',()=>{
   }
  }
  updateMotion();window.galleryCursor?.raise();
-});
-// Keep pointer gestures focused on browsing while the site owns fullscreen.
-for(const type of ['contextmenu','selectstart','dragstart','auxclick','copy','cut','paste']){
- document.addEventListener(type,e=>{if(isExhibitionFullscreen())e.preventDefault();},true);
 }
-document.addEventListener('mousedown',e=>{
- if(isExhibitionFullscreen()&&e.button!==0)e.preventDefault();
-},true);
-document.addEventListener('wheel',e=>{
- if(isExhibitionFullscreen()&&(e.ctrlKey||e.metaKey))e.preventDefault();
+document.addEventListener('fullscreenchange',syncExhibitionMode);
+browserFullscreen.addEventListener('change',syncExhibitionMode);
+// Keep pointer gestures focused on browsing while the site owns fullscreen.
+for(const type of ['contextmenu','selectstart','dragstart','auxclick','copy','cut','paste','gesturestart','gesturechange','gestureend']){
+ document.addEventListener(type,e=>{if(isExhibitionMode())e.preventDefault();},true);
+}
+for(const type of ['pointerdown','pointerup','mousedown','mouseup','click']){
+ document.addEventListener(type,e=>{
+  if(!isExhibitionMode()||(e.button===0&&!e.ctrlKey&&!e.metaKey&&!e.altKey))return;
+  e.preventDefault();e.stopImmediatePropagation();
+ },true);
+}
+window.addEventListener('wheel',e=>{
+ if(!isExhibitionMode()||(!e.ctrlKey&&!e.metaKey))return;
+ e.preventDefault();e.stopImmediatePropagation();
 },{capture:true,passive:false});
 const exhibitionShortcuts=new Set(['a','c','x','v','f','g','p','s','+','-','=','0']);
 document.addEventListener('keydown',e=>{
- if(!isExhibitionFullscreen())return;
+ if(!isExhibitionMode())return;
  if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')||((e.ctrlKey||e.metaKey)&&exhibitionShortcuts.has(e.key.toLowerCase())))e.preventDefault();
 },true);
 $('display-settings').addEventListener('click',()=>{$('slide-duration').value=String(Math.round(1200000/settings.duration/5)*5);syncSpeedPreview();$('hover-delay').value=String(settings.hoverDelay/1000);syncHoverPreview();$('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;modalOpen($('settings-dialog'));});
@@ -252,7 +262,7 @@ $('save-settings').addEventListener('click',()=>{
 for(const event of ['pointerdown','pointermove','keydown','wheel','touchstart','scroll'])document.addEventListener(event,()=>{lastActivity=Date.now();$('idle-notice').hidden=true;},{passive:true,capture:event==='scroll'});
 $('keep-reading').addEventListener('click',()=>{lastActivity=Date.now();$('idle-notice').hidden=true;});
 document.addEventListener('keydown',e=>{
- if(e.key==='Escape'&&isExhibitionFullscreen())return;
+ if(e.key==='Escape'&&isExhibitionMode())return;
  if(dialogs.some(d=>d.open)||['SELECT','INPUT','TEXTAREA'].includes(e.target.tagName))return;
  if(openingStep===0){if(e.key==='ArrowRight'||e.key==='Escape'){e.preventDefault();showOpening(1);}return;}
  if(viewport.contains(e.target))return;
@@ -274,4 +284,4 @@ function showOpening(step){
 }
 $('opening-close').addEventListener('click',()=>showOpening(1));
 new ResizeObserver(()=>{if(openingStep===1)measure();}).observe(viewport);
-showOpening(1);setActive(0);
+showOpening(1);setActive(0);syncExhibitionMode();
