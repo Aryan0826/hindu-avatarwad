@@ -60,3 +60,7 @@
 @container(max-width:170px){#gallery-app .card-name{font-size:1.55rem}#gallery-app .card-form{font-size:.73rem}}
 @media(max-width:650px){#gallery-app .avatar-card{min-width:200px}}
 @media(max-height:520px) and (min-width:651px){#gallery-app .avatar-card{min-width:180px}}
+
+/* The existing frame is the placeholder until nearby artwork is requested. */
+#gallery-app .avatar-card img:not([src]){visibility:hidden}
+.exhibition-fullscreen dialog::backdrop{backdrop-filter:none}

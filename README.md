@@ -31,3 +31,5 @@ The supplied-content revision is on `avatar-content-refresh`. The existing image
 Enter fullscreen from Display settings to start exhibition mode. Display settings close and stay hidden while fullscreen. Visitors can browse with scroll, swipe and primary clicks, while text selection, image dragging, secondary-click menus and common page shortcuts are disabled within the gallery. Press Esc to exit fullscreen and access settings again.
 
 The Windows exhibition launcher opens the gallery with `?exhibition=1`. This enables visitor input restrictions even in kiosk windows that do not report native fullscreen to the page. The separate tablet launcher also keeps Windows pointer input inside the gallery display.
+
+Gallery artwork is served as WebP. Cards request a smaller responsive image only when visible or approaching the viewport; the detail reader uses the original image dimensions. Rapid wheel and drag input is batched into animation frames.

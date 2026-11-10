@@ -4,10 +4,10 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;',
 const dialogs = [$('detail-dialog'), $('settings-dialog')];
 const viewport = $('gallery-viewport'), track = $('gallery-track'), group = $('gallery-grid');
 let active = 0, openingStep = 1, paused = false, hovered = false, keyboardFocus = false;
-let offset = 0, groupWidth = 0, stride = 0, cardWidth = 0, viewportWidth = 0, lastFrame = 0, raf = 0, motionOptIn = false;
+let offset = 0, groupWidth = 0, stride = 0, viewportWidth = 0, lastFrame = 0, raf = 0, motionOptIn = false, needsPaint = false;
 let lastActivity = Date.now(), drag = null, suppressClick = false;
 let hoverTimer = 0, hoverUntil = 0, pointerX = null, pointerY = null;
-let positions = [], visibleStops = [], galleryStop = 0, tiltCard = null, tiltBounds = null, navigation = null;
+let positions = [], galleryStop = 0, tiltCard = null, tiltBounds = null, navigation = null;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let settings = {duration:12000,idle:180000,hoverDelay:5000,gentle:reducedMotion.matches};
 try {
@@ -20,7 +20,7 @@ const cards = avatars.map((a,i) => {
  const button = document.createElement('button');
  button.className='avatar-card';button.dataset.avatar=a.id;button.dataset.index=i;
  button.setAttribute('aria-label',`Explore ${a.name}, ${a.form}. ${a.theme.toLowerCase()}`);
- button.innerHTML=`<span class="card-surface"><span class="card-painting">${a.image?`<img src="${esc(a.image)}" alt="" loading="${i<4?'eager':'lazy'}" decoding="async" draggable="false">`:'<span class="future-card"><span lang="sa">कल्कि</span><strong>Yet to incarnate.</strong><small>A future promise of renewed dharma.</small></span>'}<span class="card-num">${String(i+1).padStart(2,'0')}</span></span><span class="card-copy"><span class="card-topline"><span class="card-theme">${esc(a.theme)}</span><svg class="card-emblem" viewBox="0 0 64 64" aria-hidden="true"><path d="${esc(window.galleryCursor?.pathFor(a.id)||'M12 32H52')}"/></svg></span><span class="card-title-row"><span class="card-name">${esc(a.name)}</span><span class="card-sanskrit" lang="sa">${esc(a.sa)}</span></span><span class="card-form">${esc(a.form)}</span><span class="card-arrow" aria-hidden="true">↗</span></span></span>`;
+ button.innerHTML=`<span class="card-surface"><span class="card-painting">${a.image?`<img width="640" height="960" alt="" decoding="async" draggable="false">`:'<span class="future-card"><span lang="sa">कल्कि</span><strong>Yet to incarnate.</strong><small>A future promise of renewed dharma.</small></span>'}<span class="card-num">${String(i+1).padStart(2,'0')}</span></span><span class="card-copy"><span class="card-topline"><span class="card-theme">${esc(a.theme)}</span><svg class="card-emblem" viewBox="0 0 64 64" aria-hidden="true"><path d="${esc(window.galleryCursor?.pathFor(a.id)||'M12 32H52')}"/></svg></span><span class="card-title-row"><span class="card-name">${esc(a.name)}</span><span class="card-sanskrit" lang="sa">${esc(a.sa)}</span></span><span class="card-form">${esc(a.form)}</span><span class="card-arrow" aria-hidden="true">↗</span></span></span>`;
  group.append(button);return button;
 });
 const introStop=document.createElement('button');
@@ -33,37 +33,56 @@ for(let i=0;i<2;i++){
  const copy=group.cloneNode(true);copy.removeAttribute('id');copy.setAttribute('aria-hidden','true');copy.classList.add('gallery-copy');
  copy.querySelectorAll('button').forEach(b=>b.tabIndex=-1);track.append(copy);
 }
-const renderedStops=Array.from(track.querySelectorAll('.avatar-card,.intro-stop'));
+const renderedStops=Array.from(track.querySelectorAll('.avatar-card,.intro-stop'),(el,i)=>({
+ el,img:el.querySelector('img'),index:i%stops.length,loop:Math.floor(i/stops.length),yaw:null,depth:null
+}));
 // Visual copies must never become focus targets when tapped.
 track.addEventListener('pointerdown',e=>{if(e.target.closest('.gallery-copy'))e.preventDefault();});
 function normalize(value){return groupWidth?((value%groupWidth)+groupWidth)%groupWidth:0;}
 function setActive(index){
  active=(index+avatars.length)%avatars.length;
- document.documentElement.dataset.avatar=avatars[active].id;window.galleryCursor?.sync(avatars[active].id);
+ const id=avatars[active].id;
+ if(document.documentElement.dataset.avatar===id)return;
+ document.documentElement.dataset.avatar=id;window.galleryCursor?.sync(id);
+}
+function loadCardImage(card,width,visible){
+ const src=avatars[card.index].image;
+ const img=card.img;
+ img.fetchPriority=visible?(card.index===0?'high':'auto'):'low';
+ img.sizes=`${Math.max(1,Math.round(width-12))}px`;
+ img.srcset=`${src.replace(/\.webp$/, '-card.webp')} 640w, ${src} 1024w`;
+ img.src=src.replace(/\.webp$/, '-card.webp');
 }
 function paint(){
+ needsPaint=false;
  offset=normalize(offset);track.style.transform=`translate3d(${-offset}px,0,0)`;
- if(!positions.length)return;
+ if(!positions.length||!groupWidth)return;
  const midpoint=(offset+viewportWidth/2)%groupWidth;
  let nearest=0,best=Infinity;
  positions.forEach((p,i)=>{const raw=Math.abs(p.center-midpoint),d=Math.min(raw,groupWidth-raw);if(d<best){nearest=i;best=d;}});
  galleryStop=nearest;
  if(!$('detail-dialog').open&&nearest<avatars.length)setActive(nearest);
  const gentle=isStill();
- visibleStops.forEach(r=>{r.el.style.removeProperty('--depth');r.el.style.removeProperty('--yaw');});visibleStops=[];
- renderedStops.forEach((el,i)=>{
-  const p=positions[i%stops.length],x=p.center+Math.floor(i/stops.length)*groupWidth-offset;
-  if(x<-p.width||x>viewportWidth+p.width)return;
-  const distance=Math.max(-1,Math.min(1,(x-viewportWidth/2)/(viewportWidth*.62)));
-  el.style.setProperty('--yaw',`${gentle?0:-distance*11}deg`);
-  el.style.setProperty('--depth',`${gentle?0:18*(1-Math.abs(distance))}px`);
-  visibleStops.push({el});
- });
+ for(const card of renderedStops){
+  const p=positions[card.index],left=p.left+card.loop*groupWidth-offset,x=left+p.width/2;
+  const visible=left+p.width>0&&left<viewportWidth;
+  if(card.img&&!card.img.hasAttribute('src')&&(visible||(left+p.width>0&&left<viewportWidth+stride)))loadCardImage(card,p.width,visible);
+  if(x<-p.width||x>viewportWidth+p.width)continue;
+  const distance=gentle?1:Math.max(-1,Math.min(1,(x-viewportWidth/2)/(viewportWidth*.62)));
+  const yaw=gentle?0:Math.round(-distance*1100)/100;
+  const depth=gentle?0:Math.round(1800*(1-Math.abs(distance)))/100;
+  if(card.yaw!==yaw){card.yaw=yaw;card.el.style.setProperty('--yaw',`${yaw}deg`);}
+  if(card.depth!==depth){card.depth=depth;card.el.style.setProperty('--depth',`${depth}px`);}
+ }
+}
+function requestPaint(){
+ needsPaint=true;
+ if(!raf)raf=requestAnimationFrame(frame);
 }
 function measure(){
  navigation=null;
  const oldWidth=groupWidth;groupWidth=group.offsetWidth;
- cardWidth=cards[0].offsetWidth;viewportWidth=viewport.clientWidth;
+ viewportWidth=viewport.clientWidth;
  positions=stops.map(el=>({left:el.offsetLeft,width:el.offsetWidth,center:el.offsetLeft+el.offsetWidth/2}));
  stride=positions[1].left-positions[0].left;
  if(oldWidth)offset=offset/oldWidth*groupWidth;
@@ -85,12 +104,12 @@ function frame(now){
   if(t===1)navigation=null;
   lastFrame=now;if(navigation||canMove())raf=requestAnimationFrame(frame);else lastFrame=0;return;
  }
- if(!canMove()){lastFrame=0;return;}
+ if(!canMove()){if(needsPaint)paint();lastFrame=0;return;}
  const delta=lastFrame?Math.min(now-lastFrame,64):0;lastFrame=now;
  offset+=delta*stride/settings.duration;paint();raf=requestAnimationFrame(frame);
 }
 function updateMotion(){
- syncPlay();if(canMove()||navigation){if(!raf){lastFrame=0;raf=requestAnimationFrame(frame);}}
+ syncPlay();if(canMove()||navigation||needsPaint){if(!raf){lastFrame=0;raf=requestAnimationFrame(frame);}}
  else{if(raf)cancelAnimationFrame(raf);raf=0;lastFrame=0;}
 }
 function moveTo(index,animate=false){
@@ -150,14 +169,14 @@ viewport.addEventListener('pointermove',e=>{
  }
  if(drag.id!==e.pointerId)return;
  const dx=e.clientX-drag.x;if(Math.abs(dx)>8&&!drag.moved){drag.moved=true;suppressClick=true;viewport.setPointerCapture(e.pointerId);}
- if(drag.moved){offset=drag.start-dx;paint();}
+ if(drag.moved){offset=drag.start-dx;requestPaint();}
 });
 function finishDrag(e){if(!drag||drag.id!==e.pointerId)return;drag=null;updateMotion();setTimeout(()=>suppressClick=false,0);}
 viewport.addEventListener('pointerup',finishDrag);viewport.addEventListener('pointercancel',finishDrag);
 viewport.addEventListener('lostpointercapture',e=>{if(drag?.id===e.pointerId){drag=null;updateMotion();}});
 viewport.addEventListener('wheel',e=>{
  if(e.defaultPrevented||e.ctrlKey)return;const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
- if(delta){e.preventDefault();navigation=null;offset+=delta*(e.deltaMode===1?16:e.deltaMode===2?viewportWidth:1);paint();}
+ if(delta){e.preventDefault();navigation=null;offset+=delta*(e.deltaMode===1?16:e.deltaMode===2?viewportWidth:1);requestPaint();}
 },{passive:false});
 $('prev').addEventListener('click',()=>stepGallery(-1));$('next').addEventListener('click',()=>stepGallery(1));
 $('play').addEventListener('click',()=>{
