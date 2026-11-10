@@ -14,3 +14,5 @@
 .gentle .cursor-orbit{animation:none}
 
 .gallery-cursor:not(.visible) .cursor-orbit{animation-play-state:paused}
+.smooth-gallery .cursor-orbit{animation:none}
+.smooth-gallery .cursor-aura svg{filter:none}

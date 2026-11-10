@@ -9,12 +9,17 @@ let lastActivity = Date.now(), drag = null, suppressClick = false;
 let hoverTimer = 0, hoverUntil = 0, pointerX = null, pointerY = null;
 let positions = [], galleryStop = 0, tiltCard = null, tiltBounds = null, navigation = null;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-let settings = {duration:12000,idle:180000,hoverDelay:5000,gentle:reducedMotion.matches};
+const exhibitionLaunch=new URLSearchParams(window.location.search).get('exhibition')==='1';
+const browserFullscreen=matchMedia('(display-mode: fullscreen)');
+const pixelRatioQueries=[1.25,1.5,2,2.5,3].map(dpr=>matchMedia(`(min-resolution: ${dpr}dppx)`));
+let smooth=false, drift=null, driftTimer=0, driftPeriod=0;
+let settings = {duration:12000,idle:180000,hoverDelay:5000,gentle:reducedMotion.matches,rendering:'auto'};
 try {
  const saved = JSON.parse(localStorage.getItem('avatar-gallery-settings') || 'null');
  if(saved && Number.isFinite(saved.duration) && saved.duration>=4000 && saved.duration<=48000 && [60000,90000,120000,180000].includes(saved.idle)) settings = {...settings,...saved};
 } catch {}
 if(!Number.isFinite(settings.hoverDelay)||settings.hoverDelay<1000||settings.hoverDelay>30000)settings.hoverDelay=5000;
+if(!['auto','smooth','depth'].includes(settings.rendering))settings.rendering='auto';
 document.documentElement.classList.toggle('gentle', settings.gentle);
 const cards = avatars.map((a,i) => {
  const button = document.createElement('button');
@@ -56,6 +61,9 @@ function loadCardImage(card,width,visible){
 function paint(){
  needsPaint=false;
  offset=normalize(offset);track.style.transform=`translate3d(${-offset}px,0,0)`;
+ inspectCards();
+}
+function inspectCards(){
  if(!positions.length||!groupWidth)return;
  const midpoint=(offset+viewportWidth/2)%groupWidth;
  let nearest=0,best=Infinity;
@@ -67,6 +75,7 @@ function paint(){
   const p=positions[card.index],left=p.left+card.loop*groupWidth-offset,x=left+p.width/2;
   const visible=left+p.width>0&&left<viewportWidth;
   if(card.img&&!card.img.hasAttribute('src')&&(visible||(left+p.width>0&&left<viewportWidth+stride)))loadCardImage(card,p.width,visible);
+  if(smooth)continue;
   if(x<-p.width||x>viewportWidth+p.width)continue;
   const distance=gentle?1:Math.max(-1,Math.min(1,(x-viewportWidth/2)/(viewportWidth*.62)));
   const yaw=gentle?0:Math.round(-distance*1100)/100;
@@ -75,11 +84,34 @@ function paint(){
   if(card.depth!==depth){card.depth=depth;card.el.style.setProperty('--depth',`${depth}px`);}
  }
 }
+// Move the rail on the browser's animation timeline. JS only checks nearby
+// artwork and cursor identity periodically, not on every display refresh.
+function sampleDrift(){
+ const time=drift?.currentTime;
+ if(typeof time==='number')offset=normalize(time/driftPeriod*groupWidth);
+}
+function startDrift(){
+ driftPeriod=groupWidth*settings.duration/stride;
+ drift=track.animate([{transform:'translate3d(0,0,0)'},{transform:`translate3d(${-groupWidth}px,0,0)`}],
+  {duration:driftPeriod,iterations:Infinity,easing:'linear'});
+ drift.currentTime=normalize(offset)/groupWidth*driftPeriod;
+ driftTimer=setInterval(()=>{sampleDrift();inspectCards();},180);
+}
+function stopDrift(){
+ if(!drift)return;
+ sampleDrift();paint();drift.cancel();drift=null;clearInterval(driftTimer);
+}
+function syncRendering(){
+ const pixels=window.innerWidth*window.innerHeight*(window.devicePixelRatio||1)**2;
+ const next=settings.rendering==='smooth'||(settings.rendering==='auto'&&(exhibitionLaunch||isExhibitionMode()||pixels>=3000000));
+ if(smooth!==next){stopDrift();clearTilt();smooth=next;document.documentElement.classList.toggle('smooth-gallery',smooth);requestPaint();}
+}
 function requestPaint(){
  needsPaint=true;
  if(!raf)raf=requestAnimationFrame(frame);
 }
 function measure(){
+ stopDrift();syncRendering();
  navigation=null;
  const oldWidth=groupWidth;groupWidth=group.offsetWidth;
  viewportWidth=viewport.clientWidth;
@@ -105,19 +137,29 @@ function frame(now){
   lastFrame=now;if(navigation||canMove())raf=requestAnimationFrame(frame);else lastFrame=0;return;
  }
  if(!canMove()){if(needsPaint)paint();lastFrame=0;return;}
+ if(canDrift()){if(needsPaint)paint();if(!drift)startDrift();lastFrame=0;return;}
  const delta=lastFrame?Math.min(now-lastFrame,64):0;lastFrame=now;
  offset+=delta*stride/settings.duration;paint();raf=requestAnimationFrame(frame);
 }
+function canDrift(){return smooth&&groupWidth>0&&stride>0&&typeof track.animate==='function';}
 function updateMotion(){
- syncPlay();if(canMove()||navigation||needsPaint){if(!raf){lastFrame=0;raf=requestAnimationFrame(frame);}}
+ syncPlay();
+ if(canMove()&&canDrift()&&!navigation&&!needsPaint){
+  if(raf)cancelAnimationFrame(raf);raf=0;lastFrame=0;
+  if(!drift)startDrift();
+  return;
+ }
+ stopDrift();
+ if(canMove()||navigation||needsPaint){if(!raf){lastFrame=0;raf=requestAnimationFrame(frame);}}
  else{if(raf)cancelAnimationFrame(raf);raf=0;lastFrame=0;}
 }
 function moveTo(index,animate=false){
+ stopDrift();
  index=(index+stops.length)%stops.length;const target=normalize(positions[index].center-viewportWidth/2);
  if(animate&&!isStill()){
   let delta=target-offset;if(delta>groupWidth/2)delta-=groupWidth;if(delta<-groupWidth/2)delta+=groupWidth;
   navigation={from:offset,to:offset+delta,index,start:performance.now()};updateMotion();
- }else{navigation=null;offset=target;paint();}
+ }else{navigation=null;offset=target;paint();updateMotion();}
 }
 function stepGallery(direction){moveTo((navigation?.index??galleryStop)+direction,true);lastActivity=Date.now();}
 track.addEventListener('click',e=>{
@@ -156,12 +198,12 @@ viewport.addEventListener('keydown',e=>{
  }
 });
 viewport.addEventListener('pointerdown',e=>{
- if(e.button!==0)return;navigation=null;clearTilt();drag={id:e.pointerId,x:e.clientX,start:offset,moved:false};updateMotion();
+ if(e.button!==0)return;stopDrift();navigation=null;clearTilt();drag={id:e.pointerId,x:e.clientX,start:offset,moved:false};updateMotion();
 });
 viewport.addEventListener('pointermove',e=>{
  pauseForPointer(e);
  if(!drag){
-  if(e.pointerType!=='mouse'||isStill())return;
+  if(e.pointerType!=='mouse'||isStill()||smooth)return;
   const card=e.target.closest('.avatar-card');
   if(card!==tiltCard){clearTilt();if(card){tiltCard=card;tiltBounds=card.getBoundingClientRect();}}
   if(card&&tiltBounds){const px=Math.max(0,Math.min(1,(e.clientX-tiltBounds.left)/tiltBounds.width)),py=Math.max(0,Math.min(1,(e.clientY-tiltBounds.top)/tiltBounds.height));card.style.setProperty('--tilt-x',`${(0.5-py)*4}deg`);card.style.setProperty('--tilt-y',`${(px-0.5)*5}deg`);card.style.setProperty('--light-x',`${px*100}%`);card.style.setProperty('--light-y',`${py*100}%`);}
@@ -176,7 +218,7 @@ viewport.addEventListener('pointerup',finishDrag);viewport.addEventListener('poi
 viewport.addEventListener('lostpointercapture',e=>{if(drag?.id===e.pointerId){drag=null;updateMotion();}});
 viewport.addEventListener('wheel',e=>{
  if(e.defaultPrevented||e.ctrlKey)return;const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
- if(delta){e.preventDefault();navigation=null;offset+=delta*(e.deltaMode===1?16:e.deltaMode===2?viewportWidth:1);requestPaint();}
+ if(delta){e.preventDefault();stopDrift();navigation=null;offset+=delta*(e.deltaMode===1?16:e.deltaMode===2?viewportWidth:1);requestPaint();}
 },{passive:false});
 $('prev').addEventListener('click',()=>stepGallery(-1));$('next').addEventListener('click',()=>stepGallery(1));
 $('play').addEventListener('click',()=>{
@@ -208,29 +250,34 @@ function renderDetail(){
 function openDetail(index){setActive(index);renderDetail();if(!$('detail-dialog').open)modalOpen($('detail-dialog'));lastActivity=Date.now();}
 $('close-detail').addEventListener('click',()=>$('detail-dialog').close());$('detail-prev').addEventListener('click',()=>openDetail(active-1));$('detail-next').addEventListener('click',()=>openDetail(active+1));
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;setTimeout(()=>$('toast').hidden=true,4500);}
-const exhibitionLaunch=new URLSearchParams(window.location.search).get('exhibition')==='1';
-const browserFullscreen=matchMedia('(display-mode: fullscreen)');
 function isExhibitionMode(){
  return exhibitionLaunch||browserFullscreen.matches||document.fullscreenElement===document.documentElement;
 }
 function fullscreenFallback(){$('fullscreen-status').hidden=false;$('fullscreen-status').textContent='This browser could not start fullscreen exhibition mode. Try opening the gallery directly in your browser.';}
-$('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else fullscreenFallback();}catch{fullscreenFallback();}});
+$('fullscreen').addEventListener('click',async()=>{
+ try{
+  if(document.fullscreenElement){await document.exitFullscreen();return;}
+  if(!document.documentElement.requestFullscreen){fullscreenFallback();return;}
+  await document.documentElement.requestFullscreen();
+  applyDisplaySettings();$('settings-dialog').close();$('gallery-page-title').focus({preventScroll:true});
+ }catch{fullscreenFallback();}
+});
 function syncExhibitionMode(){
  const active=isExhibitionMode();
  document.documentElement.classList.toggle('exhibition-fullscreen',active);
- $('display-settings').hidden=active;
+ $('display-settings').hidden=exhibitionLaunch||!!document.fullscreenElement;
+ $('fullscreen').hidden=exhibitionLaunch||(!document.fullscreenElement&&browserFullscreen.matches);
+ const label=document.fullscreenElement?'Exit fullscreen':'Enter fullscreen';
+ $('fullscreen-label').textContent=label;$('fullscreen').setAttribute('aria-label',label);
+ $('fullscreen-help').textContent=exhibitionLaunch?'Open these controls with Ctrl + Alt + S. To close the exhibition, press Alt + F4 on the laptop.':'Open these controls with Ctrl + Alt + S. In fullscreen, visitors can scroll and select an avatar.';
  $('fullscreen-status').hidden=true;
- if(active){
-  window.getSelection()?.removeAllRanges();
-  if($('settings-dialog').open){
-   applyDisplaySettings();$('settings-dialog').close();
-   $('gallery-page-title').focus({preventScroll:true});
-  }
- }
+ if(active)window.getSelection()?.removeAllRanges();
+ syncRendering();
  updateMotion();window.galleryCursor?.raise();
 }
 document.addEventListener('fullscreenchange',syncExhibitionMode);
 browserFullscreen.addEventListener('change',syncExhibitionMode);
+pixelRatioQueries.forEach(query=>query.addEventListener('change',()=>{syncRendering();updateMotion();}));
 // Keep pointer gestures focused on browsing while the site owns fullscreen.
 for(const type of ['contextmenu','selectstart','dragstart','auxclick','copy','cut','paste','gesturestart','gesturechange','gestureend']){
  document.addEventListener(type,e=>{if(isExhibitionMode())e.preventDefault();},true);
@@ -247,10 +294,24 @@ window.addEventListener('wheel',e=>{
 },{capture:true,passive:false});
 const exhibitionShortcuts=new Set(['a','c','x','v','f','g','p','s','+','-','=','0']);
 document.addEventListener('keydown',e=>{
+ if(e.ctrlKey&&e.altKey&&!e.metaKey&&!e.shiftKey&&e.code==='KeyS'){
+  e.preventDefault();e.stopImmediatePropagation();
+  if(!e.repeat){
+   if($('settings-dialog').open)$('settings-dialog').close();
+   else{if(openingStep===0)showOpening(1);openSettings();}
+  }
+  return;
+ }
  if(!isExhibitionMode())return;
  if(e.key==='ContextMenu'||(e.shiftKey&&e.key==='F10')||((e.ctrlKey||e.metaKey)&&exhibitionShortcuts.has(e.key.toLowerCase())))e.preventDefault();
 },true);
-$('display-settings').addEventListener('click',()=>{$('slide-duration').value=String(Math.round(1200000/settings.duration/5)*5);syncSpeedPreview();$('hover-delay').value=String(settings.hoverDelay/1000);syncHoverPreview();$('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;modalOpen($('settings-dialog'));});
+function openSettings(){
+ $('slide-duration').value=String(Math.round(1200000/settings.duration/5)*5);syncSpeedPreview();
+ $('hover-delay').value=String(settings.hoverDelay/1000);syncHoverPreview();
+ $('idle-duration').value=String(settings.idle);$('reduce-motion').checked=settings.gentle;
+ $('rendering-mode').value=settings.rendering;modalOpen($('settings-dialog'));
+}
+$('display-settings').addEventListener('click',openSettings);
 $('close-settings').addEventListener('click',()=>$('settings-dialog').close());
 function syncSpeedPreview(){
  const speed=Number($('slide-duration').value)/100;
@@ -271,8 +332,10 @@ function syncHoverPreview(){
 $('hover-delay').addEventListener('input',syncHoverPreview);
 syncHoverPreview();
 function applyDisplaySettings(){
- settings={duration:1200000/Number($('slide-duration').value),idle:Number($('idle-duration').value),hoverDelay:Number($('hover-delay').value)*1000,gentle:$('reduce-motion').checked};
+ stopDrift();
+ settings={duration:1200000/Number($('slide-duration').value),idle:Number($('idle-duration').value),hoverDelay:Number($('hover-delay').value)*1000,gentle:$('reduce-motion').checked,rendering:$('rendering-mode').value};
  motionOptIn=!settings.gentle;document.documentElement.classList.toggle('gentle',settings.gentle);try{localStorage.setItem('avatar-gallery-settings',JSON.stringify(settings));}catch{}
+ syncRendering();
 }
 $('save-settings').addEventListener('click',()=>{
  applyDisplaySettings();

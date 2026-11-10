@@ -22,7 +22,7 @@
  function raise(){if(!enabled)return;try{if(el.matches(':popover-open'))el.hidePopover();el.showPopover();}catch{disable();}}
  function disable(){enabled=false;document.documentElement.classList.remove('cursor-ready');el.classList.remove('visible');if(raf)cancelAnimationFrame(raf);raf=0;try{if(el.matches(':popover-open'))el.hidePopover();}catch{}}
  function setup(){if(!fine.matches){disable();return;}enabled=true;raise();if(enabled)document.documentElement.classList.add('cursor-ready');}
- function draw(now){raf=0;const dt=Math.min(40,now-(last||now-16));last=now;const gentle=reduced.matches||document.documentElement.classList.contains('gentle');const k=gentle?1:1-Math.exp(-dt/48);fx+=(x-fx)*k;fy+=(y-fy)*k;aura.style.transform=`translate3d(${fx.toFixed(2)}px,${fy.toFixed(2)}px,0)`;if(Math.abs(x-fx)+Math.abs(y-fy)>.08)raf=requestAnimationFrame(draw);else{last=0;}}
+ function draw(now){raf=0;const dt=Math.min(40,now-(last||now-16));last=now;const gentle=reduced.matches||document.documentElement.classList.contains('gentle')||document.documentElement.classList.contains('smooth-gallery');const k=gentle?1:1-Math.exp(-dt/48);fx+=(x-fx)*k;fy+=(y-fy)*k;aura.style.transform=`translate3d(${fx.toFixed(2)}px,${fy.toFixed(2)}px,0)`;if(Math.abs(x-fx)+Math.abs(y-fy)>.08)raf=requestAnimationFrame(draw);else{last=0;}}
  function hide(){el.classList.remove('visible');seen=false;if(raf)cancelAnimationFrame(raf);raf=0;last=0;}
  document.addEventListener('pointermove',e=>{
   if(!enabled||e.pointerType==='touch')return;

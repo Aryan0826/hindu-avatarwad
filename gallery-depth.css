@@ -64,3 +64,18 @@
 /* The existing frame is the placeholder until nearby artwork is requested. */
 #gallery-app .avatar-card img:not([src]){visibility:hidden}
 .exhibition-fullscreen dialog::backdrop{backdrop-filter:none}
+
+/* One moving rail in Smooth mode, with no per-card 3D or hover filters. */
+.smooth-gallery .gallery-viewport{perspective:none}
+.smooth-gallery .gallery-track,.smooth-gallery .gallery-group{transform-style:flat}
+.smooth-gallery #gallery-app .avatar-card,.smooth-gallery .intro-stop{
+ transform:none;transform-style:flat;filter:none;transition:none
+}
+.smooth-gallery .card-surface,.smooth-gallery .avatar-card:hover .card-surface{
+ transform:none;box-shadow:0 6px 0 -3px #07131e;transition:none
+}
+.smooth-gallery .card-surface:after{display:none}
+.smooth-gallery .card-emblem,.smooth-gallery .portal-lotus{filter:none}
+.smooth-gallery .card-name{text-shadow:none!important}
+.smooth-gallery dialog::backdrop{backdrop-filter:none}
+.smooth-gallery dialog[open]{animation:none}
